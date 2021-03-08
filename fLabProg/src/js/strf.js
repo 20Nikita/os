@@ -1,8 +1,9 @@
 import { generate } from "./helpers";
 
-export function strf () {
+export function strf (array) {
+let array1 = array.slice()
+console.log(array1)
 let globalTime = 0
-let array = generate(20)
 array.sort((a,b) => a["readyTime"] - b["readyTime"])
 for (let i = 0; i < array.length; i++){
     
@@ -19,5 +20,5 @@ for (let i = 0; i < array.length; i++){
     }
     globalTime += array[i]["workTime"]
 }
-console.log(array)
+return array
 }
