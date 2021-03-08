@@ -3,22 +3,14 @@ import {jStat} from "jstat"
 const MEAN_TIME = 5,
     LOGBASE = 0.8;
 
-const containerEl = document.querySelector(".container");
-
 let mainArr = [];
 
-function getBaseLog(x, y) {
+const getBaseLog = (x, y) => {
     return Math.log(y) / Math.log(x);
 }
 
-
-function paintCell (items) {
-    let string = document.createElement("div");
-    string.classList.add("task-string")
-
-    let cell = document.createElement("div");
-    cell.classList.add("item")
-    string.appendChild(cell);
+const pushData = (arr, state) => {
+    arr.push(state)
 }
 
 export const generate = (tasksNum) => {
@@ -40,9 +32,79 @@ export const fifoAlgo = (data) => {
         resultItem = [],
         lastWorkTime = 0;
 
-    data.sort(( a, b ) =>  a[1] - b[1]);
+    data.sort(( a, b ) =>  a["readyTime"] - b["readyTime"]);
+
+    resultItem.push(data[0].id)
+
+    for(let j = 0; j < data[0].readyTime; j++){
+        pushData(resultItem, 0)
+    }
+    for(let j = 0; j < data[0].workTime; j++){
+        pushData(resultItem, 2)
+    }
+
+    lastWorkTime = resultItem.length;
+    resultArr.push(resultItem)
 
     for(let i = 1; i < data.length; i++){
+        resultItem = [];
+        resultItem.push(data[i].id);
 
+        for(let j = 0; j < data[i].readyTime; j++){
+            pushData(resultItem, 0)
+        }
+
+        if(lastWorkTime > (data[i].readyTime)){
+            let diff = lastWorkTime - data[i].readyTime;
+
+            for(let j = 0; j < diff - 1; j++){
+                pushData(resultItem, 1)
+            }
+        }
+
+        for(let j = 0; j < data[i].workTime; j++){
+            pushData(resultItem, 2)
+        }
+
+        lastWorkTime = resultItem.length;
+        resultArr.push(resultItem);
+    }
+
+    return resultArr;
+}
+
+export const paintNums = (data, attachToEl) => {
+    let maxLengthIndex = data.reduce((p, c, i, a) => a[p].length > c.length ? p : i, 0);
+    for (let i = 0; i < data[maxLengthIndex].length - 1; i++){
+        let cell = document.createElement("div");
+        cell.classList.add("item");
+        cell.innerText = `${i}`;
+        attachToEl.appendChild(cell);
+    }
+}
+
+export const paintString = (data, attachToEl) => {
+
+    for(let i = 0; i < data.length; i++){
+        let string = document.createElement("div");
+        string.classList.add("task-string");
+        let idCell = document.createElement("div");
+        idCell.classList.add("item", "task-id");
+        idCell.innerText = `P${data[i][0]}`
+        string.appendChild(idCell);
+
+        for(let j = 1; j < data[i].length; j ++) {
+            let cell = document.createElement("div");
+            let styleClass = ["item"];
+
+            if(data[i][j] === 1)
+                styleClass.push("item--r");
+            else if(data[i][j] === 2)
+                styleClass.push("item--w");
+
+            cell.classList.add(...styleClass)
+            string.appendChild(cell);
+        }
+        attachToEl.appendChild(string);
     }
 }

@@ -185,6 +185,57 @@ module.exports = function (METHOD_NAME, argument) {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/internals/array-reduce.js":
+/*!********************************************************!*\
+  !*** ./node_modules/core-js/internals/array-reduce.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var aFunction = __webpack_require__(/*! ../internals/a-function */ "./node_modules/core-js/internals/a-function.js");
+var toObject = __webpack_require__(/*! ../internals/to-object */ "./node_modules/core-js/internals/to-object.js");
+var IndexedObject = __webpack_require__(/*! ../internals/indexed-object */ "./node_modules/core-js/internals/indexed-object.js");
+var toLength = __webpack_require__(/*! ../internals/to-length */ "./node_modules/core-js/internals/to-length.js");
+
+// `Array.prototype.{ reduce, reduceRight }` methods implementation
+var createMethod = function (IS_RIGHT) {
+  return function (that, callbackfn, argumentsLength, memo) {
+    aFunction(callbackfn);
+    var O = toObject(that);
+    var self = IndexedObject(O);
+    var length = toLength(O.length);
+    var index = IS_RIGHT ? length - 1 : 0;
+    var i = IS_RIGHT ? -1 : 1;
+    if (argumentsLength < 2) while (true) {
+      if (index in self) {
+        memo = self[index];
+        index += i;
+        break;
+      }
+      index += i;
+      if (IS_RIGHT ? index < 0 : length <= index) {
+        throw TypeError('Reduce of empty array with no initial value');
+      }
+    }
+    for (;IS_RIGHT ? index >= 0 : length > index; index += i) if (index in self) {
+      memo = callbackfn(memo, self[index], index, O);
+    }
+    return memo;
+  };
+};
+
+module.exports = {
+  // `Array.prototype.reduce` method
+  // https://tc39.es/ecma262/#sec-array.prototype.reduce
+  left: createMethod(false),
+  // `Array.prototype.reduceRight` method
+  // https://tc39.es/ecma262/#sec-array.prototype.reduceright
+  right: createMethod(true)
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/internals/classof-raw.js":
 /*!*******************************************************!*\
   !*** ./node_modules/core-js/internals/classof-raw.js ***!
@@ -300,6 +351,66 @@ var EXISTS = isObject(document) && isObject(document.createElement);
 module.exports = function (it) {
   return EXISTS ? document.createElement(it) : {};
 };
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/internals/engine-is-node.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/core-js/internals/engine-is-node.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var classof = __webpack_require__(/*! ../internals/classof-raw */ "./node_modules/core-js/internals/classof-raw.js");
+var global = __webpack_require__(/*! ../internals/global */ "./node_modules/core-js/internals/global.js");
+
+module.exports = classof(global.process) == 'process';
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/internals/engine-user-agent.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/core-js/internals/engine-user-agent.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getBuiltIn = __webpack_require__(/*! ../internals/get-built-in */ "./node_modules/core-js/internals/get-built-in.js");
+
+module.exports = getBuiltIn('navigator', 'userAgent') || '';
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/internals/engine-v8-version.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/core-js/internals/engine-v8-version.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var global = __webpack_require__(/*! ../internals/global */ "./node_modules/core-js/internals/global.js");
+var userAgent = __webpack_require__(/*! ../internals/engine-user-agent */ "./node_modules/core-js/internals/engine-user-agent.js");
+
+var process = global.process;
+var versions = process && process.versions;
+var v8 = versions && versions.v8;
+var match, version;
+
+if (v8) {
+  match = v8.split('.');
+  version = match[0] + match[1];
+} else if (userAgent) {
+  match = userAgent.match(/Edge\/(\d+)/);
+  if (!match || match[1] >= 74) {
+    match = userAgent.match(/Chrome\/(\d+)/);
+    if (match) version = match[1];
+  }
+}
+
+module.exports = version && +version;
 
 
 /***/ }),
@@ -1168,6 +1279,37 @@ var postfix = Math.random();
 module.exports = function (key) {
   return 'Symbol(' + String(key === undefined ? '' : key) + ')_' + (++id + postfix).toString(36);
 };
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es.array.reduce.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/core-js/modules/es.array.reduce.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $ = __webpack_require__(/*! ../internals/export */ "./node_modules/core-js/internals/export.js");
+var $reduce = __webpack_require__(/*! ../internals/array-reduce */ "./node_modules/core-js/internals/array-reduce.js").left;
+var arrayMethodIsStrict = __webpack_require__(/*! ../internals/array-method-is-strict */ "./node_modules/core-js/internals/array-method-is-strict.js");
+var CHROME_VERSION = __webpack_require__(/*! ../internals/engine-v8-version */ "./node_modules/core-js/internals/engine-v8-version.js");
+var IS_NODE = __webpack_require__(/*! ../internals/engine-is-node */ "./node_modules/core-js/internals/engine-is-node.js");
+
+var STRICT_METHOD = arrayMethodIsStrict('reduce');
+// Chrome 80-82 has a critical bug
+// https://bugs.chromium.org/p/chromium/issues/detail?id=1049982
+var CHROME_BUG = !IS_NODE && CHROME_VERSION > 79 && CHROME_VERSION < 83;
+
+// `Array.prototype.reduce` method
+// https://tc39.es/ecma262/#sec-array.prototype.reduce
+$({ target: 'Array', proto: true, forced: !STRICT_METHOD || CHROME_BUG }, {
+  reduce: function reduce(callbackfn /* , initialValue */) {
+    return $reduce(this, callbackfn, arguments.length, arguments.length > 1 ? arguments[1] : undefined);
+  }
+});
 
 
 /***/ }),
@@ -6264,41 +6406,41 @@ module.exports = g;
 /*!***************************!*\
   !*** ./src/js/helpers.js ***!
   \***************************/
-/*! exports provided: generate, fifoAlgo */
+/*! exports provided: generate, fifoAlgo, paintNums, paintString */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "generate", function() { return generate; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fifoAlgo", function() { return fifoAlgo; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "paintNums", function() { return paintNums; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "paintString", function() { return paintString; });
 /* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.array.sort.js */ "./node_modules/core-js/modules/es.array.sort.js");
 /* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var jstat__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! jstat */ "./node_modules/jstat/dist/jstat.js");
-/* harmony import */ var jstat__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(jstat__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.array.reduce.js */ "./node_modules/core-js/modules/es.array.reduce.js");
+/* harmony import */ var core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var jstat__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! jstat */ "./node_modules/jstat/dist/jstat.js");
+/* harmony import */ var jstat__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(jstat__WEBPACK_IMPORTED_MODULE_2__);
+
 
 
 var MEAN_TIME = 5,
     LOGBASE = 0.8;
-var containerEl = document.querySelector(".container");
 var mainArr = [];
 
-function getBaseLog(x, y) {
+var getBaseLog = function getBaseLog(x, y) {
   return Math.log(y) / Math.log(x);
-}
+};
 
-function paintCell(items) {
-  var string = document.createElement("div");
-  string.classList.add("task-string");
-  var cell = document.createElement("div");
-  cell.classList.add("item");
-  string.appendChild(cell);
-}
+var pushData = function pushData(arr, state) {
+  arr.push(state);
+};
 
 var generate = function generate(tasksNum) {
   for (var i = 0; i < tasksNum; i++) {
     var data = [];
     data.id = i;
-    data.readyTime = Math.floor(jstat__WEBPACK_IMPORTED_MODULE_1__["jStat"].normal.sample(MEAN_TIME, MEAN_TIME * 2));
+    data.readyTime = Math.floor(jstat__WEBPACK_IMPORTED_MODULE_2__["jStat"].normal.sample(MEAN_TIME, MEAN_TIME * 2));
     if (data.readyTime < 0) data.readyTime = 0;
     data.workTime = Math.floor(getBaseLog(LOGBASE, 1 - Math.random())) + 1;
     data.prior = 5;
@@ -6312,10 +6454,82 @@ var fifoAlgo = function fifoAlgo(data) {
       resultItem = [],
       lastWorkTime = 0;
   data.sort(function (a, b) {
-    return a[1] - b[1];
+    return a["readyTime"] - b["readyTime"];
   });
+  resultItem.push(data[0].id);
 
-  for (var i = 1; i < data.length; i++) {}
+  for (var j = 0; j < data[0].readyTime; j++) {
+    pushData(resultItem, 0);
+  }
+
+  for (var _j = 0; _j < data[0].workTime; _j++) {
+    pushData(resultItem, 2);
+  }
+
+  lastWorkTime = resultItem.length;
+  resultArr.push(resultItem);
+
+  for (var i = 1; i < data.length; i++) {
+    resultItem = [];
+    resultItem.push(data[i].id);
+
+    for (var _j2 = 0; _j2 < data[i].readyTime; _j2++) {
+      pushData(resultItem, 0);
+    }
+
+    if (lastWorkTime > data[i].readyTime) {
+      var diff = lastWorkTime - data[i].readyTime;
+
+      for (var _j3 = 0; _j3 < diff - 1; _j3++) {
+        pushData(resultItem, 1);
+      }
+    }
+
+    for (var _j4 = 0; _j4 < data[i].workTime; _j4++) {
+      pushData(resultItem, 2);
+    }
+
+    lastWorkTime = resultItem.length;
+    resultArr.push(resultItem);
+  }
+
+  return resultArr;
+};
+var paintNums = function paintNums(data, attachToEl) {
+  var maxLengthIndex = data.reduce(function (p, c, i, a) {
+    return a[p].length > c.length ? p : i;
+  }, 0);
+
+  for (var i = 0; i < data[maxLengthIndex].length - 1; i++) {
+    var cell = document.createElement("div");
+    cell.classList.add("item");
+    cell.innerText = "".concat(i);
+    attachToEl.appendChild(cell);
+  }
+};
+var paintString = function paintString(data, attachToEl) {
+  for (var i = 0; i < data.length; i++) {
+    var string = document.createElement("div");
+    string.classList.add("task-string");
+    var idCell = document.createElement("div");
+    idCell.classList.add("item", "task-id");
+    idCell.innerText = "P".concat(data[i][0]);
+    string.appendChild(idCell);
+
+    for (var j = 1; j < data[i].length; j++) {
+      var _cell$classList;
+
+      var cell = document.createElement("div");
+      var styleClass = ["item"];
+      if (data[i][j] === 1) styleClass.push("item--r");else if (data[i][j] === 2) styleClass.push("item--w");
+
+      (_cell$classList = cell.classList).add.apply(_cell$classList, styleClass);
+
+      string.appendChild(cell);
+    }
+
+    attachToEl.appendChild(string);
+  }
 };
 
 /***/ }),
@@ -6332,7 +6546,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers */ "./src/js/helpers.js");
 
 window.addEventListener('DOMContentLoaded', function () {
-  "use strict"; // generate();
+  "use strict";
+
+  var cellWrapper = document.querySelector(".task-wrapper");
+  var tactWrapper = document.querySelector(".tact-wrapper");
+  var data = Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["generate"])(20);
+  var processedData = Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["fifoAlgo"])(data);
+  Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["paintNums"])(processedData, tactWrapper);
+  Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["paintString"])(processedData, cellWrapper);
 });
 
 /***/ })
