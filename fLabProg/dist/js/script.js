@@ -6426,7 +6426,6 @@ __webpack_require__.r(__webpack_exports__);
 
 var MEAN_TIME = 5,
     LOGBASE = 0.8;
-var mainArr = [];
 
 var getBaseLog = function getBaseLog(x, y) {
   return Math.log(y) / Math.log(x);
@@ -6437,6 +6436,8 @@ var pushData = function pushData(arr, state) {
 };
 
 var generate = function generate(tasksNum) {
+  var mainArr = [];
+
   for (var i = 0; i < tasksNum; i++) {
     var data = [];
     data.id = i;
