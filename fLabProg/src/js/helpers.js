@@ -3,7 +3,7 @@ import {jStat} from "jstat"
 const MEAN_TIME = 5,
     LOGBASE = 0.8;
 
-let mainArr = [];
+
 
 const getBaseLog = (x, y) => {
     return Math.log(y) / Math.log(x);
@@ -14,6 +14,7 @@ const pushData = (arr, state) => {
 }
 
 export const generate = (tasksNum) => {
+    let mainArr = [];
     for(let i = 0; i < tasksNum; i++){
         let data = [];
         data.id = i;
@@ -32,7 +33,7 @@ export const fifoAlgo = (data) => {
         resultItem = [],
         lastWorkTime = 0;
 
-    data.sort(( a, b ) =>  a["readyTime"] - b["readyTime"]);
+    // data.sort(( a, b ) =>  a["readyTime"] - b["readyTime"]);
 
     resultItem.push(data[0].id)
 

@@ -163,6 +163,36 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/internals/array-method-has-species-support.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/core-js/internals/array-method-has-species-support.js ***!
+  \****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var fails = __webpack_require__(/*! ../internals/fails */ "./node_modules/core-js/internals/fails.js");
+var wellKnownSymbol = __webpack_require__(/*! ../internals/well-known-symbol */ "./node_modules/core-js/internals/well-known-symbol.js");
+var V8_VERSION = __webpack_require__(/*! ../internals/engine-v8-version */ "./node_modules/core-js/internals/engine-v8-version.js");
+
+var SPECIES = wellKnownSymbol('species');
+
+module.exports = function (METHOD_NAME) {
+  // We can't use this feature detection in V8 since it causes
+  // deoptimization and serious performance degradation
+  // https://github.com/zloirock/core-js/issues/677
+  return V8_VERSION >= 51 || !fails(function () {
+    var array = [];
+    var constructor = array.constructor = {};
+    constructor[SPECIES] = function () {
+      return { foo: 1 };
+    };
+    return array[METHOD_NAME](Boolean).foo !== 1;
+  });
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/internals/array-method-is-strict.js":
 /*!******************************************************************!*\
   !*** ./node_modules/core-js/internals/array-method-is-strict.js ***!
@@ -312,6 +342,28 @@ module.exports = function (bitmap, value) {
     writable: !(bitmap & 4),
     value: value
   };
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/internals/create-property.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/core-js/internals/create-property.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var toPrimitive = __webpack_require__(/*! ../internals/to-primitive */ "./node_modules/core-js/internals/to-primitive.js");
+var definePropertyModule = __webpack_require__(/*! ../internals/object-define-property */ "./node_modules/core-js/internals/object-define-property.js");
+var createPropertyDescriptor = __webpack_require__(/*! ../internals/create-property-descriptor */ "./node_modules/core-js/internals/create-property-descriptor.js");
+
+module.exports = function (object, key, value) {
+  var propertyKey = toPrimitive(key);
+  if (propertyKey in object) definePropertyModule.f(object, propertyKey, createPropertyDescriptor(0, value));
+  else object[propertyKey] = value;
 };
 
 
@@ -737,6 +789,24 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/internals/is-array.js":
+/*!****************************************************!*\
+  !*** ./node_modules/core-js/internals/is-array.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var classof = __webpack_require__(/*! ../internals/classof-raw */ "./node_modules/core-js/internals/classof-raw.js");
+
+// `IsArray` abstract operation
+// https://tc39.es/ecma262/#sec-isarray
+module.exports = Array.isArray || function isArray(arg) {
+  return classof(arg) == 'Array';
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/internals/is-forced.js":
 /*!*****************************************************!*\
   !*** ./node_modules/core-js/internals/is-forced.js ***!
@@ -791,6 +861,28 @@ module.exports = function (it) {
 /***/ (function(module, exports) {
 
 module.exports = false;
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/internals/native-symbol.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/core-js/internals/native-symbol.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var IS_NODE = __webpack_require__(/*! ../internals/engine-is-node */ "./node_modules/core-js/internals/engine-is-node.js");
+var V8_VERSION = __webpack_require__(/*! ../internals/engine-v8-version */ "./node_modules/core-js/internals/engine-v8-version.js");
+var fails = __webpack_require__(/*! ../internals/fails */ "./node_modules/core-js/internals/fails.js");
+
+module.exports = !!Object.getOwnPropertySymbols && !fails(function () {
+  /* global Symbol -- required for testing */
+  return !Symbol.sham &&
+    // Chrome 38 Symbol has incorrect toString conversion
+    // Chrome 38-40 symbols are not inherited from DOM collections prototypes to instances
+    (IS_NODE ? V8_VERSION === 38 : V8_VERSION > 37 && V8_VERSION < 41);
+});
 
 
 /***/ }),
@@ -1283,6 +1375,54 @@ module.exports = function (key) {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/internals/use-symbol-as-uid.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/core-js/internals/use-symbol-as-uid.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var NATIVE_SYMBOL = __webpack_require__(/*! ../internals/native-symbol */ "./node_modules/core-js/internals/native-symbol.js");
+
+module.exports = NATIVE_SYMBOL
+  /* global Symbol -- safe */
+  && !Symbol.sham
+  && typeof Symbol.iterator == 'symbol';
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/internals/well-known-symbol.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/core-js/internals/well-known-symbol.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var global = __webpack_require__(/*! ../internals/global */ "./node_modules/core-js/internals/global.js");
+var shared = __webpack_require__(/*! ../internals/shared */ "./node_modules/core-js/internals/shared.js");
+var has = __webpack_require__(/*! ../internals/has */ "./node_modules/core-js/internals/has.js");
+var uid = __webpack_require__(/*! ../internals/uid */ "./node_modules/core-js/internals/uid.js");
+var NATIVE_SYMBOL = __webpack_require__(/*! ../internals/native-symbol */ "./node_modules/core-js/internals/native-symbol.js");
+var USE_SYMBOL_AS_UID = __webpack_require__(/*! ../internals/use-symbol-as-uid */ "./node_modules/core-js/internals/use-symbol-as-uid.js");
+
+var WellKnownSymbolsStore = shared('wks');
+var Symbol = global.Symbol;
+var createWellKnownSymbol = USE_SYMBOL_AS_UID ? Symbol : Symbol && Symbol.withoutSetter || uid;
+
+module.exports = function (name) {
+  if (!has(WellKnownSymbolsStore, name) || !(NATIVE_SYMBOL || typeof WellKnownSymbolsStore[name] == 'string')) {
+    if (NATIVE_SYMBOL && has(Symbol, name)) {
+      WellKnownSymbolsStore[name] = Symbol[name];
+    } else {
+      WellKnownSymbolsStore[name] = createWellKnownSymbol('Symbol.' + name);
+    }
+  } return WellKnownSymbolsStore[name];
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/modules/es.array.reduce.js":
 /*!*********************************************************!*\
   !*** ./node_modules/core-js/modules/es.array.reduce.js ***!
@@ -1308,6 +1448,65 @@ var CHROME_BUG = !IS_NODE && CHROME_VERSION > 79 && CHROME_VERSION < 83;
 $({ target: 'Array', proto: true, forced: !STRICT_METHOD || CHROME_BUG }, {
   reduce: function reduce(callbackfn /* , initialValue */) {
     return $reduce(this, callbackfn, arguments.length, arguments.length > 1 ? arguments[1] : undefined);
+  }
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es.array.slice.js":
+/*!********************************************************!*\
+  !*** ./node_modules/core-js/modules/es.array.slice.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $ = __webpack_require__(/*! ../internals/export */ "./node_modules/core-js/internals/export.js");
+var isObject = __webpack_require__(/*! ../internals/is-object */ "./node_modules/core-js/internals/is-object.js");
+var isArray = __webpack_require__(/*! ../internals/is-array */ "./node_modules/core-js/internals/is-array.js");
+var toAbsoluteIndex = __webpack_require__(/*! ../internals/to-absolute-index */ "./node_modules/core-js/internals/to-absolute-index.js");
+var toLength = __webpack_require__(/*! ../internals/to-length */ "./node_modules/core-js/internals/to-length.js");
+var toIndexedObject = __webpack_require__(/*! ../internals/to-indexed-object */ "./node_modules/core-js/internals/to-indexed-object.js");
+var createProperty = __webpack_require__(/*! ../internals/create-property */ "./node_modules/core-js/internals/create-property.js");
+var wellKnownSymbol = __webpack_require__(/*! ../internals/well-known-symbol */ "./node_modules/core-js/internals/well-known-symbol.js");
+var arrayMethodHasSpeciesSupport = __webpack_require__(/*! ../internals/array-method-has-species-support */ "./node_modules/core-js/internals/array-method-has-species-support.js");
+
+var HAS_SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('slice');
+
+var SPECIES = wellKnownSymbol('species');
+var nativeSlice = [].slice;
+var max = Math.max;
+
+// `Array.prototype.slice` method
+// https://tc39.es/ecma262/#sec-array.prototype.slice
+// fallback for not array-like ES3 strings and DOM objects
+$({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT }, {
+  slice: function slice(start, end) {
+    var O = toIndexedObject(this);
+    var length = toLength(O.length);
+    var k = toAbsoluteIndex(start, length);
+    var fin = toAbsoluteIndex(end === undefined ? length : end, length);
+    // inline `ArraySpeciesCreate` for usage native `Array#slice` where it's possible
+    var Constructor, result, n;
+    if (isArray(O)) {
+      Constructor = O.constructor;
+      // cross-realm fallback
+      if (typeof Constructor == 'function' && (Constructor === Array || isArray(Constructor.prototype))) {
+        Constructor = undefined;
+      } else if (isObject(Constructor)) {
+        Constructor = Constructor[SPECIES];
+        if (Constructor === null) Constructor = undefined;
+      }
+      if (Constructor === Array || Constructor === undefined) {
+        return nativeSlice.call(O, k, fin);
+      }
+    }
+    result = new (Constructor === undefined ? Array : Constructor)(max(fin - k, 0));
+    for (n = 0; k < fin; k++, n++) if (k in O) createProperty(result, n, O[k]);
+    result.length = n;
+    return result;
   }
 });
 
@@ -6415,18 +6614,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fifoAlgo", function() { return fifoAlgo; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "paintNums", function() { return paintNums; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "paintString", function() { return paintString; });
-/* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.array.sort.js */ "./node_modules/core-js/modules/es.array.sort.js");
-/* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.array.reduce.js */ "./node_modules/core-js/modules/es.array.reduce.js");
-/* harmony import */ var core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var jstat__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! jstat */ "./node_modules/jstat/dist/jstat.js");
-/* harmony import */ var jstat__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(jstat__WEBPACK_IMPORTED_MODULE_2__);
-
+/* harmony import */ var core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.array.reduce.js */ "./node_modules/core-js/modules/es.array.reduce.js");
+/* harmony import */ var core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var jstat__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! jstat */ "./node_modules/jstat/dist/jstat.js");
+/* harmony import */ var jstat__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(jstat__WEBPACK_IMPORTED_MODULE_1__);
 
 
 var MEAN_TIME = 5,
     LOGBASE = 0.8;
-var mainArr = [];
 
 var getBaseLog = function getBaseLog(x, y) {
   return Math.log(y) / Math.log(x);
@@ -6437,10 +6632,12 @@ var pushData = function pushData(arr, state) {
 };
 
 var generate = function generate(tasksNum) {
+  var mainArr = [];
+
   for (var i = 0; i < tasksNum; i++) {
     var data = [];
     data.id = i;
-    data.readyTime = Math.floor(jstat__WEBPACK_IMPORTED_MODULE_2__["jStat"].normal.sample(MEAN_TIME, MEAN_TIME * 2));
+    data.readyTime = Math.floor(jstat__WEBPACK_IMPORTED_MODULE_1__["jStat"].normal.sample(MEAN_TIME, MEAN_TIME * 2));
     if (data.readyTime < 0) data.readyTime = 0;
     data.workTime = Math.floor(getBaseLog(LOGBASE, 1 - Math.random())) + 1;
     data.prior = 5;
@@ -6452,10 +6649,8 @@ var generate = function generate(tasksNum) {
 var fifoAlgo = function fifoAlgo(data) {
   var resultArr = [],
       resultItem = [],
-      lastWorkTime = 0;
-  data.sort(function (a, b) {
-    return a["readyTime"] - b["readyTime"];
-  });
+      lastWorkTime = 0; // data.sort(( a, b ) =>  a["readyTime"] - b["readyTime"]);
+
   resultItem.push(data[0].id);
 
   for (var j = 0; j < data[0].readyTime; j++) {
@@ -6544,17 +6739,97 @@ var paintString = function paintString(data, attachToEl) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers */ "./src/js/helpers.js");
+/* harmony import */ var _strf__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./strf */ "./src/js/strf.js");
+/* harmony import */ var _preprocess__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./preprocess */ "./src/js/preprocess.js");
+
+
 
 window.addEventListener('DOMContentLoaded', function () {
   "use strict";
 
   var cellWrapper = document.querySelector(".task-wrapper");
-  var tactWrapper = document.querySelector(".tact-wrapper");
-  var data = Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["generate"])(20);
+  var tactWrapper = document.querySelector(".tact-wrapper"); // let data = generate(20);
+  // let processedData = fifoAlgo(data);
+  // paintNums(processedData, tactWrapper);
+  // paintString(processedData, cellWrapper);
+
+  var data = Object(_strf__WEBPACK_IMPORTED_MODULE_1__["strf"])(Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["generate"])(20));
   var processedData = Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["fifoAlgo"])(data);
   Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["paintNums"])(processedData, tactWrapper);
   Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["paintString"])(processedData, cellWrapper);
 });
+
+/***/ }),
+
+/***/ "./src/js/preprocess.js":
+/*!******************************!*\
+  !*** ./src/js/preprocess.js ***!
+  \******************************/
+/*! exports provided: readFile */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "readFile", function() { return readFile; });
+function readFile(input) {
+  var reader = new FileReader();
+  reader.readAsText(input);
+
+  reader.onload = function () {
+    console.log(reader.result);
+  };
+
+  reader.onerror = function () {
+    console.log(reader.error);
+  };
+}
+
+/***/ }),
+
+/***/ "./src/js/strf.js":
+/*!************************!*\
+  !*** ./src/js/strf.js ***!
+  \************************/
+/*! exports provided: strf */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "strf", function() { return strf; });
+/* harmony import */ var core_js_modules_es_array_slice_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.array.slice.js */ "./node_modules/core-js/modules/es.array.slice.js");
+/* harmony import */ var core_js_modules_es_array_slice_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_slice_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.array.sort.js */ "./node_modules/core-js/modules/es.array.sort.js");
+/* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./helpers */ "./src/js/helpers.js");
+
+
+
+function strf(array) {
+  var array1 = array.slice();
+  console.log(array1);
+  var globalTime = 0;
+  array.sort(function (a, b) {
+    return a["readyTime"] - b["readyTime"];
+  });
+
+  for (var i = 0; i < array.length; i++) {
+    for (var j = i; j < array.length; j++) {
+      if (globalTime < array[j]["readyTime"]) {
+        break;
+      }
+
+      if (array[i]["workTime"] > array[j]["workTime"]) {
+        var t = array[i];
+        array[i] = array[j];
+        array[j] = t;
+      }
+    }
+
+    globalTime += array[i]["workTime"];
+  }
+
+  return array;
+}
 
 /***/ })
 
