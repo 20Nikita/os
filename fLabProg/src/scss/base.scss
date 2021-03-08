@@ -1,0 +1,56 @@
+body{
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.item{
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid black;
+
+  &--r{
+    background-color: yellow;
+  }
+
+  &--w{
+    background-color: green;
+  }
+}
+
+.table-wrapper{
+  width: 100%;
+  margin-top: 50px;
+  margin-right: 50px;
+  margin-left: 50px;
+  border: 1px solid black;
+}
+
+.tact {
+  &-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin-left: 26px;
+  }
+}
+
+.task {
+  &-wrapper {
+    width: 100%;
+  }
+  &-string{
+    display: flex;
+    align-items: center;
+    border-top: 1px solid black;
+  }
+  &-tacts{
+    display: flex;
+    align-items: center;
+  }
+  &-id{
+    border-left: none;
+  }
+}

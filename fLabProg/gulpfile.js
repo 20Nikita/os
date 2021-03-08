@@ -3,10 +3,10 @@
 const gulp = require("gulp");
 const webpack = require("webpack-stream");
 const browsersync = require("browser-sync");
-// const sass        = require('gulp-sass');
-//const cleanCSS = require('gulp-clean-css');
-// const autoprefixer = require('gulp-autoprefixer');
-//const rename = require("gulp-rename");
+const sass        = require('gulp-sass');
+const cleanCSS = require('gulp-clean-css');
+const autoprefixer = require('gulp-autoprefixer');
+const rename = require("gulp-rename");
 // const imagemin = require('gulp-imagemin');
 //const htmlmin = require('gulp-htmlmin');
 
@@ -18,16 +18,16 @@ gulp.task("copy-html", () => {
                 //.pipe(htmlmin({ collapseWhitespace: true })) //минифицировать html
                 .on("end", browsersync.reload);
 });
-//
-// gulp.task('styles', () => {
-//     return gulp.src("./src/scss/**/*.+(scss|sass)")
-//         .pipe(sass().on('error', sass.logError))        //для минификации css добавить в sass({outputStyle: 'compressed'})
-//         //.pipe(rename({suffix: '.min', prefix: ''}))   //добавление .min к расширению файла
-//         .pipe(autoprefixer())
-//         //.pipe(cleanCSS({compatibility: 'ie8'}))
-//         .pipe(gulp.dest("dist/css"))
-//         .on("end", browsersync.reload);
-// });
+
+gulp.task('styles', () => {
+    return gulp.src("./src/scss/**/*.+(scss|sass)")
+        .pipe(sass().on('error', sass.logError))        //для минификации css добавить в sass({outputStyle: 'compressed'})
+        .pipe(rename({suffix: '.min', prefix: ''}))   //добавление .min к расширению файла
+        .pipe(autoprefixer())
+        .pipe(cleanCSS({compatibility: 'ie8'}))
+        .pipe(gulp.dest("dist/css"))
+        .on("end", browsersync.reload);
+});
 //
 // gulp.task('images', () => {
 //     return gulp.src("./src/img/**/*")
@@ -87,7 +87,7 @@ gulp.task("watch", () => {
     
     gulp.watch("./src/*.html", gulp.parallel("copy-html"));
     // gulp.watch("./src/assets/**/*.*", gulp.parallel("copy-assets"));
-    // gulp.watch("./src/scss/**/*.+(scss|sass|css)", gulp.parallel('styles'));
+    gulp.watch("./src/scss/**/*.+(scss|sass|css)", gulp.parallel('styles'));
     gulp.watch("./src/js/**/*.js", gulp.parallel("build-js"));
 });
 
