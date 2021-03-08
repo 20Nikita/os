@@ -6330,10 +6330,86 @@ var fifoAlgo = function fifoAlgo(data) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers */ "./src/js/helpers.js");
+/* harmony import */ var _strf__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./strf */ "./src/js/strf.js");
+/* harmony import */ var _preprocess__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./preprocess */ "./src/js/preprocess.js");
+
+
 
 window.addEventListener('DOMContentLoaded', function () {
-  "use strict"; // generate();
+  "use strict";
+
+  Object(_preprocess__WEBPACK_IMPORTED_MODULE_2__["readFile"])("../assets/txt.txt"); // generate();
+
+  Object(_strf__WEBPACK_IMPORTED_MODULE_1__["strf"])();
 });
+
+/***/ }),
+
+/***/ "./src/js/preprocess.js":
+/*!******************************!*\
+  !*** ./src/js/preprocess.js ***!
+  \******************************/
+/*! exports provided: readFile */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "readFile", function() { return readFile; });
+function readFile(input) {
+  var reader = new FileReader();
+  reader.readAsText(input);
+
+  reader.onload = function () {
+    console.log(reader.result);
+  };
+
+  reader.onerror = function () {
+    console.log(reader.error);
+  };
+}
+
+/***/ }),
+
+/***/ "./src/js/strf.js":
+/*!************************!*\
+  !*** ./src/js/strf.js ***!
+  \************************/
+/*! exports provided: strf */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "strf", function() { return strf; });
+/* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.array.sort.js */ "./node_modules/core-js/modules/es.array.sort.js");
+/* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./helpers */ "./src/js/helpers.js");
+
+
+function strf() {
+  var globalTime = 0;
+  var array = Object(_helpers__WEBPACK_IMPORTED_MODULE_1__["generate"])(20);
+  array.sort(function (a, b) {
+    return a["readyTime"] - b["readyTime"];
+  });
+
+  for (var i = 0; i < array.length; i++) {
+    for (var j = i; j < array.length; j++) {
+      if (globalTime < array[j]["readyTime"]) {
+        break;
+      }
+
+      if (array[i]["workTime"] > array[j]["workTime"]) {
+        var t = array[i];
+        array[i] = array[j];
+        array[j] = t;
+      }
+    }
+
+    globalTime += array[i]["workTime"];
+  }
+
+  console.log(array);
+}
 
 /***/ })
 
