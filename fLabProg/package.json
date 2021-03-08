@@ -26,6 +26,7 @@
     "webpack-stream": "^5.2.1"
   },
   "dependencies": {
-    "jstat": "^1.9.4"
+    "jstat": "^1.9.4",
+    "gsap": "^3.6.0"
   }
 }

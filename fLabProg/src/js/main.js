@@ -1,4 +1,6 @@
-import {fifoAlgo, generate, paintNums, paintString} from "./helpers";
+import { processArray, generate, paintNums, paintString} from "./helpers";
+import {fifo, strf} from "./algorithms";
+import {modalAction} from "./modals";
 
 window.addEventListener('DOMContentLoaded', () => {
     "use strict"
@@ -6,8 +8,16 @@ window.addEventListener('DOMContentLoaded', () => {
     const cellWrapper = document.querySelector(".task-wrapper");
     const tactWrapper = document.querySelector(".tact-wrapper");
 
-    let data = generate(20);
-    let processedData = fifoAlgo(data);
+    modalAction();
+
+    let data = fifo(generate(20));
+    let processedData = processArray(data);
     paintNums(processedData, tactWrapper);
     paintString(processedData, cellWrapper);
+
+    // let data = strf(generate(20));
+    // let processedData = processArray(data)
+    // paintNums(processedData, tactWrapper);
+    // paintString(processedData, cellWrapper);
+    
 });

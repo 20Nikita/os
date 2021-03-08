@@ -27,12 +27,10 @@ export const generate = (tasksNum) => {
     return mainArr;
 }
 
-export const fifoAlgo = (data) => {
+export const processArray = (data) => {
     let resultArr = [],
         resultItem = [],
         lastWorkTime = 0;
-
-    data.sort(( a, b ) =>  a["readyTime"] - b["readyTime"]);
 
     resultItem.push(data[0].id)
 
@@ -95,12 +93,17 @@ export const paintString = (data, attachToEl) => {
 
         for(let j = 1; j < data[i].length; j ++) {
             let cell = document.createElement("div");
+            cell.innerText = "Б"
             let styleClass = ["item"];
 
-            if(data[i][j] === 1)
+            if(data[i][j] === 1) {
+                cell.innerText = "Г"
                 styleClass.push("item--r");
-            else if(data[i][j] === 2)
+            }
+            else if(data[i][j] === 2) {
+                cell.innerText = "Р"
                 styleClass.push("item--w");
+            }
 
             cell.classList.add(...styleClass)
             string.appendChild(cell);
