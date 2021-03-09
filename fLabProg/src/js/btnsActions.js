@@ -1,5 +1,7 @@
-import {generate, paintNums, paintString, processArray} from "./helpers";
 import {algorithmsEnum, fifo, strf} from "./algorithms";
+
+import {generate, paintNums, paintString, processArray} from "./helpers";
+import {loadFileProcess} from "./preprocess";
 
 
 export const algoProcess = (algorithm, btn) => {
@@ -25,6 +27,13 @@ export const algoProcess = (algorithm, btn) => {
                 break;
             case algorithmsEnum.STRF:
                 data = strf(generate(20));
+                break;
+            case algorithmsEnum.UPLOAD_FIFO:
+                data = fifo(loadFileProcess());
+                break;
+            case algorithmsEnum.UPLOAD_STRF:
+                data = loadFileProcess();
+                // data = strf(loadFileProcess());
                 break;
             default:
                 console.log("We can't process such type of algorithm")

@@ -1,6 +1,8 @@
 export const algorithmsEnum = {
     FIFO: "fifo",
-    STRF: "strf"
+    STRF: "strf",
+    UPLOAD_FIFO: "upload_fifo",
+    UPLOAD_STRF: "upload_strf"
 }
 
 export function fifo(array) {

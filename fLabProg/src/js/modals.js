@@ -43,10 +43,10 @@ export const modalAction = () => {
         })
         cards[i].querySelectorAll(".btn").forEach((btn, i) => {
 
-            btn.addEventListener("click", () => {
-                reversed ? tl.reverse() : tl.play();
-                reversed = !reversed;
-            })
+            // btn.addEventListener("click", () => {
+            //     reversed ? tl.reverse() : tl.play();
+            //     reversed = !reversed;
+            // })
         })
     })
 }

@@ -7,6 +7,7 @@
 
     <script type="text/javascript" src="js/script.js" defer></script>
     <title>Title</title>
+
 </head>
 <body>
     <div class="container">
@@ -42,8 +43,11 @@
                 <div class="card-upload">
                     <div class="card-action-text">Или загрузить свои данные и применить алгоритм FIFO для моделирования</div>
                     <div class="upload-wrapper">
-                        <div class="upload-area"></div>
-                        <a href="#" class="btn btn--fifo">Поехали</a>
+                        <div class="upload-area">
+                            <input type="file">
+                            <pre class="file"></pre>
+                        </div>
+                        <a href="#" class="btn btn--upload" id="fifo-upload">Поехали</a>
                     </div>
                 </div>
 
@@ -82,8 +86,11 @@
                 <div class="card-upload">
                     <div class="card-action-text">Или загрузить свои данные и применить алгоритм SRTF для моделирования</div>
                     <div class="upload-wrapper">
-                        <div class="upload-area"></div>
-                        <a href="#" class="btn btn--strf">Поехали</a>
+                        <div class="upload-area">
+                            <input type="file">
+                            <pre class="file"></pre>
+                        </div>
+                        <a href="#" class="btn btn--upload" id="strf-upload">Поехали</a>
                     </div>
                 </div>
 
