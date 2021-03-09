@@ -6,6 +6,7 @@
 
 .container{
   padding: 50px;
+  min-height: 728px;
 }
 
 .divider{
@@ -70,9 +71,48 @@
 .table-wrapper{
   overflow-x: auto;
   width: 100%;
-  height: 100%;
+  height: 628px;
   border: 1px solid black;
   border-radius: 4px;
+  position: relative;
+}
+
+
+
+.curtain{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+
+  &-item{
+    width: 10%;
+    height: 100%;
+    background-color: black;
+    transition: background-color .3s ease-in-out;
+    display: flex;
+    flex-direction: column-reverse;
+    cursor: pointer;
+    border-right: 1px solid rgba(white, .1);
+
+    &:last-child{
+      border-right: none;
+    }
+
+    &:hover{
+      background-color: rgba(black, .9);
+    }
+
+    .key{
+      width: 35%;
+      height: 30%;
+      margin: 0 auto 15px auto;
+      background-color: white;
+      border-radius: 4px;
+    }
+  }
 }
 
 .tact {

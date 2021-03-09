@@ -1,26 +1,14 @@
 import { gsap } from "gsap";
 
-gsap.registerEffect({
-    name: "moveUp",
-    effect: (targets, config) => {
-        return gsap.from(targets, {
-            duration: config.duration,
-            y: config.y,
-            opacity: 0,
-            ease: 'power1',
-            delay: config.delay
-        });
-    },
-    defaults: {duration: 2, delay: 0, y: 0},
-    extendTimeline: true
-})
-
 export const modalAction = () => {
     const cards = document.querySelectorAll(".card"),
-        arrows = document.querySelectorAll(".up-wrapper");
+        arrows = document.querySelectorAll(".up-wrapper"),
+        curtainItems = document.querySelectorAll(".curtain-item");
+
+    let reversed = false;
 
     arrows.forEach((arrow, i) => {
-        let reversed = false;
+
         let tl = gsap.timeline({
             paused: true,
             defaults: {
@@ -52,6 +40,13 @@ export const modalAction = () => {
         arrow.addEventListener("click", () => {
             reversed ? tl.reverse() : tl.play();
             reversed = !reversed;
+        })
+        cards[i].querySelectorAll(".btn").forEach((btn, i) => {
+
+            btn.addEventListener("click", () => {
+                reversed ? tl.reverse() : tl.play();
+                reversed = !reversed;
+            })
         })
     })
 }

@@ -12176,16 +12176,21 @@ module.exports = g;
 /*!******************************!*\
   !*** ./src/js/algorithms.js ***!
   \******************************/
-/*! exports provided: fifo, strf */
+/*! exports provided: algorithmsEnum, fifo, strf */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "algorithmsEnum", function() { return algorithmsEnum; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fifo", function() { return fifo; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "strf", function() { return strf; });
 /* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.array.sort.js */ "./node_modules/core-js/modules/es.array.sort.js");
 /* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_0__);
 
+var algorithmsEnum = {
+  FIFO: "fifo",
+  STRF: "strf"
+};
 function fifo(array) {
   array.sort(function (a, b) {
     return a["readyTime"] - b["readyTime"];
@@ -12216,6 +12221,101 @@ function strf(array) {
 
   return array;
 }
+
+/***/ }),
+
+/***/ "./src/js/btnsActions.js":
+/*!*******************************!*\
+  !*** ./src/js/btnsActions.js ***!
+  \*******************************/
+/*! exports provided: algoProcess */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "algoProcess", function() { return algoProcess; });
+/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers */ "./src/js/helpers.js");
+/* harmony import */ var _algorithms__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./algorithms */ "./src/js/algorithms.js");
+
+
+var algoProcess = function algoProcess(algorithm, btn) {
+  var cellWrapper = document.querySelector(".task-wrapper"),
+      tactWrapper = document.querySelector(".tact-wrapper");
+
+  var clearTable = function clearTable(wrapper) {
+    if (wrapper) {
+      while (wrapper.firstChild) {
+        wrapper.removeChild(wrapper.firstChild);
+      }
+    }
+  };
+
+  btn.addEventListener("click", function () {
+    clearTable(tactWrapper);
+    clearTable(cellWrapper);
+    var data = [];
+
+    switch (algorithm) {
+      case _algorithms__WEBPACK_IMPORTED_MODULE_1__["algorithmsEnum"].FIFO:
+        data = Object(_algorithms__WEBPACK_IMPORTED_MODULE_1__["fifo"])(Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["generate"])(20));
+        break;
+
+      case _algorithms__WEBPACK_IMPORTED_MODULE_1__["algorithmsEnum"].STRF:
+        data = Object(_algorithms__WEBPACK_IMPORTED_MODULE_1__["strf"])(Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["generate"])(20));
+        break;
+
+      default:
+        console.log("We can't process such type of algorithm");
+    }
+
+    var processedData = Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["processArray"])(data);
+    Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["paintNums"])(processedData, tactWrapper);
+    Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["paintString"])(processedData, cellWrapper);
+  });
+};
+
+/***/ }),
+
+/***/ "./src/js/curtainsAnim.js":
+/*!********************************!*\
+  !*** ./src/js/curtainsAnim.js ***!
+  \********************************/
+/*! exports provided: curtainAnim */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "curtainAnim", function() { return curtainAnim; });
+/* harmony import */ var core_js_modules_es_array_for_each_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.array.for-each.js */ "./node_modules/core-js/modules/es.array.for-each.js");
+/* harmony import */ var core_js_modules_es_array_for_each_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_for_each_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_web_dom_collections_for_each_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/web.dom-collections.for-each.js */ "./node_modules/core-js/modules/web.dom-collections.for-each.js");
+/* harmony import */ var core_js_modules_web_dom_collections_for_each_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_for_each_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var gsap__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! gsap */ "./node_modules/gsap/index.js");
+
+
+
+var curtainAnim = function curtainAnim() {
+  var curtainItems = document.querySelectorAll(".curtain-item");
+  var tl = gsap__WEBPACK_IMPORTED_MODULE_2__["gsap"].timeline({
+    paused: true,
+    defaults: {
+      duration: .6,
+      ease: "bounce.out"
+    }
+  });
+  curtainItems.forEach(function (curtain, i) {
+    curtain.addEventListener("click", function () {
+      tl.to(curtainItems[i], {
+        y: -30,
+        duration: .6,
+        ease: "power1.inOut"
+      }).to(curtainItems[i], {
+        y: 0
+      });
+      tl.play();
+    });
+  });
+};
 
 /***/ }),
 
@@ -12363,25 +12463,23 @@ var paintString = function paintString(data, attachToEl) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers */ "./src/js/helpers.js");
-/* harmony import */ var _algorithms__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./algorithms */ "./src/js/algorithms.js");
-/* harmony import */ var _modals__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modals */ "./src/js/modals.js");
+/* harmony import */ var _modals__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modals */ "./src/js/modals.js");
+/* harmony import */ var _btnsActions__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./btnsActions */ "./src/js/btnsActions.js");
+/* harmony import */ var _curtainsAnim__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./curtainsAnim */ "./src/js/curtainsAnim.js");
+/* harmony import */ var _algorithms__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./algorithms */ "./src/js/algorithms.js");
+
 
 
 
 window.addEventListener('DOMContentLoaded', function () {
   "use strict";
 
-  var cellWrapper = document.querySelector(".task-wrapper");
-  var tactWrapper = document.querySelector(".tact-wrapper");
-  Object(_modals__WEBPACK_IMPORTED_MODULE_2__["modalAction"])();
-  var data = Object(_algorithms__WEBPACK_IMPORTED_MODULE_1__["fifo"])(Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["generate"])(20));
-  var processedData = Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["processArray"])(data);
-  Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["paintNums"])(processedData, tactWrapper);
-  Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["paintString"])(processedData, cellWrapper); // let data = strf(generate(20));
-  // let processedData = processArray(data)
-  // paintNums(processedData, tactWrapper);
-  // paintString(processedData, cellWrapper);
+  var fifoBtn = document.getElementById("fifo-generate"),
+      strfBtn = document.getElementById("strf-generate");
+  Object(_modals__WEBPACK_IMPORTED_MODULE_0__["modalAction"])(); // curtainAnim();
+
+  Object(_btnsActions__WEBPACK_IMPORTED_MODULE_1__["algoProcess"])(_algorithms__WEBPACK_IMPORTED_MODULE_3__["algorithmsEnum"].FIFO, fifoBtn);
+  Object(_btnsActions__WEBPACK_IMPORTED_MODULE_1__["algoProcess"])(_algorithms__WEBPACK_IMPORTED_MODULE_3__["algorithmsEnum"].STRF, strfBtn);
 });
 
 /***/ }),
@@ -12407,29 +12505,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-gsap__WEBPACK_IMPORTED_MODULE_3__["gsap"].registerEffect({
-  name: "moveUp",
-  effect: function effect(targets, config) {
-    return gsap__WEBPACK_IMPORTED_MODULE_3__["gsap"].from(targets, {
-      duration: config.duration,
-      y: config.y,
-      opacity: 0,
-      ease: 'power1',
-      delay: config.delay
-    });
-  },
-  defaults: {
-    duration: 2,
-    delay: 0,
-    y: 0
-  },
-  extendTimeline: true
-});
 var modalAction = function modalAction() {
   var cards = document.querySelectorAll(".card"),
-      arrows = document.querySelectorAll(".up-wrapper");
+      arrows = document.querySelectorAll(".up-wrapper"),
+      curtainItems = document.querySelectorAll(".curtain-item");
+  var reversed = false;
   arrows.forEach(function (arrow, i) {
-    var reversed = false;
     var tl = gsap__WEBPACK_IMPORTED_MODULE_3__["gsap"].timeline({
       paused: true,
       defaults: {
@@ -12455,6 +12536,12 @@ var modalAction = function modalAction() {
     arrow.addEventListener("click", function () {
       reversed ? tl.reverse() : tl.play();
       reversed = !reversed;
+    });
+    cards[i].querySelectorAll(".btn").forEach(function (btn, i) {
+      btn.addEventListener("click", function () {
+        reversed ? tl.reverse() : tl.play();
+        reversed = !reversed;
+      });
     });
   });
 };

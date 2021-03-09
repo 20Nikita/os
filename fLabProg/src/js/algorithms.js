@@ -1,3 +1,8 @@
+export const algorithmsEnum = {
+    FIFO: "fifo",
+    STRF: "strf"
+}
+
 export function fifo(array) {
     array.sort(( a, b ) =>  a["readyTime"] - b["readyTime"]);
 
