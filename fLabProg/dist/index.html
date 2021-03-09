@@ -11,130 +11,51 @@
 </head>
 <body>
     <div class="container">
-        <div class="card">
-            <div class="card-wrapper">
-                <div class="card-title">
-                    Алгоритм FIFO
 
-                    <div class="up-wrapper">
-                        <div class="span-wrapper">
-                            <span class="firstBar"></span>
-                            <span class="secondBar"></span>
-                            <span class="thirdBar"></span>
-                        </div>
-                    </div>
+        <div class="header">
+            <div class="header-title">
+                Вы можете смоделировать и сравнить алгоритмы планирования процессов (FIFO и STRF)
+            </div>
+
+            <div class="process-wrapper">
+                <div class="process-block">
+                    <div class="header-text">сгенерировав 20 тестовых значений</div>
+                    <div class="btn btn-generate">Сгенерировать</div>
                 </div>
 
-                <div class="divider"></div>
+                <div class="header-text">или</div>
 
-                <div class="card-description">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores cum debitis deleniti dolor doloremque earum excepturi explicabo illo, incidunt ipsa, maxime, odio quae quasi quidem quod sapiente sequi totam vel. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet aperiam, consequatur dignissimos dolor dolorum earum eius excepturi fugiat, illum iure nemo nisi placeat qui recusandae rerum saepe sapiente sint tempore! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid consequatur, cum cumque, dolorem ducimus ea eaque exercitationem facilis fugit illo inventore iure modi molestias nisi quaerat quisquam quos reiciendis saepe! Lorem ipsum dolor sit amet, consectetur adipisicing elit. At consequatur doloremque doloribus eligendi eum facere maxime, natus necessitatibus neque odit officia officiis, porro quae quaerat quo, repellendus saepe unde vel?
-                </div>
-
-                <div class="divider"></div>
-
-                <div class="card-generate">
-                    <div class="card-action-text">Вы можете сгенерировать данные в нашем генераторе и применить алгоритм FIFO для моделирования</div>
-                    <a href="#" class="btn btn--fifo" id="fifo-generate">Поехали</a>
-                </div>
-
-                <div class="divider"></div>
-
-                <div class="card-upload">
-                    <div class="card-action-text">Или загрузить свои данные и применить алгоритм FIFO для моделирования</div>
+                <div class="process-block">
+                    <div class="header-text">загрузив свои исходные данные</div>
                     <div class="upload-wrapper">
-                        <div class="upload-area">
-                            <input type="file">
-                            <pre class="file"></pre>
-                        </div>
-                        <a href="#" class="btn btn--upload" id="fifo-upload">Поехали</a>
+                        <input class="upload-area" type="file">
+                        <div class="btn btn-upload">Загрузить</div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="fifo-wrapper">
+            <div class="table-wrapper">
+                <div class="tact-wrapper">
+                </div>
+                <div class="task-wrapper">
+                </div>
+            </div>
+            <div class="stats">
 
             </div>
         </div>
 
-        <div class="card card--right">
-            <div class="card-wrapper">
-                <div class="card-title">
-                    Алгоритм SRTF
-
-                    <div class="up-wrapper up-wrapper--right">
-                        <div class="span-wrapper">
-                            <span class="firstBar"></span>
-                            <span class="secondBar"></span>
-                            <span class="thirdBar"></span>
-                        </div>
-                    </div>
+        <div class="strf-wrapper">
+            <div class="table-wrapper">
+                <div class="tact-wrapper">
                 </div>
-
-                <div class="divider"></div>
-
-                <div class="card-description">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores cum debitis deleniti dolor doloremque earum excepturi explicabo illo, incidunt ipsa, maxime, odio quae quasi quidem quod sapiente sequi totam vel. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet aperiam, consequatur dignissimos dolor dolorum earum eius excepturi fugiat, illum iure nemo nisi placeat qui recusandae rerum saepe sapiente sint tempore! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid consequatur, cum cumque, dolorem ducimus ea eaque exercitationem facilis fugit illo inventore iure modi molestias nisi quaerat quisquam quos reiciendis saepe! Lorem ipsum dolor sit amet, consectetur adipisicing elit. At consequatur doloremque doloribus eligendi eum facere maxime, natus necessitatibus neque odit officia officiis, porro quae quaerat quo, repellendus saepe unde vel?
+                <div class="task-wrapper">
                 </div>
-
-                <div class="divider"></div>
-
-                <div class="card-generate">
-                    <div class="card-action-text">Вы можете сгенерировать данные в нашем генераторе и применить алгоритм SRTF для моделирования</div>
-                    <a href="#" class="btn btn--strf" id="strf-generate">Поехали</a>
-                </div>
-
-                <div class="divider"></div>
-
-                <div class="card-upload">
-                    <div class="card-action-text">Или загрузить свои данные и применить алгоритм SRTF для моделирования</div>
-                    <div class="upload-wrapper">
-                        <div class="upload-area">
-                            <input type="file">
-                            <pre class="file"></pre>
-                        </div>
-                        <a href="#" class="btn btn--upload" id="strf-upload">Поехали</a>
-                    </div>
-                </div>
-
             </div>
-        </div>
+            <div class="stats">
 
-        <div class="table-wrapper">
-<!--            <div class="curtain">-->
-<!--                <div class="curtain-item">-->
-<!--                    <div class="key"></div>-->
-<!--                </div>-->
-<!--                <div class="curtain-item">-->
-<!--                    <div class="key"></div>-->
-<!--                </div>-->
-<!--                <div class="curtain-item">-->
-<!--                    <div class="key"></div>-->
-<!--                </div>-->
-<!--                <div class="curtain-item">-->
-<!--                    <div class="key"></div>-->
-<!--                </div>-->
-<!--                <div class="curtain-item">-->
-<!--                    <div class="key"></div>-->
-<!--                </div>-->
-<!--                <div class="curtain-item">-->
-<!--                    <div class="key"></div>-->
-<!--                </div>-->
-<!--                <div class="curtain-item">-->
-<!--                    <div class="key"></div>-->
-<!--                </div>-->
-<!--                <div class="curtain-item">-->
-<!--                    <div class="key"></div>-->
-<!--                </div>-->
-<!--                <div class="curtain-item">-->
-<!--                    <div class="key"></div>-->
-<!--                </div>-->
-<!--                <div class="curtain-item">-->
-<!--                    <div class="key"></div>-->
-<!--                </div>-->
-<!--            </div>-->
-
-            <div class="tact-wrapper">
-            </div>
-
-            <div class="task-wrapper">
             </div>
         </div>
     </div>

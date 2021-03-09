@@ -1,25 +1,22 @@
-import {modalAction} from "./modals";
-import {algoProcess} from "./btnsActions";
-import {curtainAnim} from "./curtainsAnim";
-
-import {algorithmsEnum} from "./algorithms";
+import {algoProcess} from "./modules/algoProcess";
+import {algorithmsEnum} from "./modules/algorithms";
 
 window.addEventListener('DOMContentLoaded', () => {
     "use strict"
 
-    const fifoBtn = document.getElementById("fifo-generate"),
-        strfBtn = document.getElementById("strf-generate"),
-        fifoUploadBtn = document.getElementById("fifo-upload"),
-        strfUploadBtn = document.getElementById("strf-upload");
+    const generateBtn = document.querySelector(".btn-generate"),
+        uploadBtn = document.querySelector(".btn-upload");
+    //     strfBtn = document.getElementById("strf-generate"),
+    //     fifoUploadBtn = document.getElementById("fifo-upload"),
+    //     strfUploadBtn = document.getElementById("strf-upload");
 
-    let mainArr = [],
-        firstAnim = false;
+    // let mainArr = [],
+    //     firstAnim = false;
 
-    modalAction();
     // curtainAnim();
 
-    algoProcess(algorithmsEnum.FIFO, fifoBtn);
-    algoProcess(algorithmsEnum.STRF, strfBtn);
-    algoProcess(algorithmsEnum.UPLOAD_FIFO, fifoUploadBtn);
-    algoProcess(algorithmsEnum.UPLOAD_STRF, strfUploadBtn);
+    algoProcess(generateBtn);
+    algoProcess(uploadBtn, true);
+    // algoProcess(algorithmsEnum.UPLOAD_FIFO, fifoUploadBtn);
+    // algoProcess(algorithmsEnum.UPLOAD_STRF, strfUploadBtn);
 });

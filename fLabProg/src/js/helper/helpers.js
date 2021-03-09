@@ -32,12 +32,12 @@ export const processArray = (data) => {
         resultItem = [],
         lastWorkTime = 0;
 
-    resultItem.push(data[0].id)
+    resultItem.push(data[0]["id"])
 
-    for(let j = 0; j < data[0].readyTime; j++){
+    for(let j = 0; j < data[0]["readyTime"]; j++){
         pushData(resultItem, 0)
     }
-    for(let j = 0; j < data[0].workTime; j++){
+    for(let j = 0; j < data[0]["workTime"]; j++){
         pushData(resultItem, 2)
     }
 
@@ -46,13 +46,13 @@ export const processArray = (data) => {
 
     for(let i = 1; i < data.length; i++){
         resultItem = [];
-        resultItem.push(data[i].id);
+        resultItem.push(data[i]["id"]);
 
-        for(let j = 0; j < data[i].readyTime; j++){
+        for(let j = 0; j < data[i]["readyTime"]; j++){
             pushData(resultItem, 0)
         }
 
-        if(lastWorkTime > (data[i].readyTime)){
+        if(lastWorkTime > (data[i]["readyTime"])){
             let diff = lastWorkTime - data[i].readyTime;
 
             for(let j = 0; j < diff - 1; j++){
@@ -60,7 +60,7 @@ export const processArray = (data) => {
             }
         }
 
-        for(let j = 0; j < data[i].workTime; j++){
+        for(let j = 0; j < data[i]["workTime"]; j++){
             pushData(resultItem, 2)
         }
 
