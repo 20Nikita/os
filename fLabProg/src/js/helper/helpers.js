@@ -3,8 +3,6 @@ import {jStat} from "jstat"
 const MEAN_TIME = 5,
     LOGBASE = 0.8;
 
-
-
 const getBaseLog = (x, y) => {
     return Math.log(y) / Math.log(x);
 }
@@ -15,6 +13,7 @@ const pushData = (arr, state) => {
 
 export const generate = (tasksNum) => {
     let mainArr = [];
+
     for(let i = 0; i < tasksNum; i++){
         let data = [];
         data.id = i;
@@ -28,19 +27,17 @@ export const generate = (tasksNum) => {
     return mainArr;
 }
 
-export const fifoAlgo = (data) => {
+export const processArray = (data) => {
     let resultArr = [],
         resultItem = [],
         lastWorkTime = 0;
 
-    // data.sort(( a, b ) =>  a["readyTime"] - b["readyTime"]);
+    resultItem.push(data[0]["id"])
 
-    resultItem.push(data[0].id)
-
-    for(let j = 0; j < data[0].readyTime; j++){
+    for(let j = 0; j < data[0]["readyTime"]; j++){
         pushData(resultItem, 0)
     }
-    for(let j = 0; j < data[0].workTime; j++){
+    for(let j = 0; j < data[0]["workTime"]; j++){
         pushData(resultItem, 2)
     }
 
@@ -49,13 +46,13 @@ export const fifoAlgo = (data) => {
 
     for(let i = 1; i < data.length; i++){
         resultItem = [];
-        resultItem.push(data[i].id);
+        resultItem.push(data[i]["id"]);
 
-        for(let j = 0; j < data[i].readyTime; j++){
+        for(let j = 0; j < data[i]["readyTime"]; j++){
             pushData(resultItem, 0)
         }
 
-        if(lastWorkTime > (data[i].readyTime)){
+        if(lastWorkTime > (data[i]["readyTime"])){
             let diff = lastWorkTime - data[i].readyTime;
 
             for(let j = 0; j < diff - 1; j++){
@@ -63,7 +60,7 @@ export const fifoAlgo = (data) => {
             }
         }
 
-        for(let j = 0; j < data[i].workTime; j++){
+        for(let j = 0; j < data[i]["workTime"]; j++){
             pushData(resultItem, 2)
         }
 
@@ -96,12 +93,17 @@ export const paintString = (data, attachToEl) => {
 
         for(let j = 1; j < data[i].length; j ++) {
             let cell = document.createElement("div");
+            cell.innerText = "Б"
             let styleClass = ["item"];
 
-            if(data[i][j] === 1)
+            if(data[i][j] === 1) {
+                cell.innerText = "Г"
                 styleClass.push("item--r");
-            else if(data[i][j] === 2)
+            }
+            else if(data[i][j] === 2) {
+                cell.innerText = "Р"
                 styleClass.push("item--w");
+            }
 
             cell.classList.add(...styleClass)
             string.appendChild(cell);

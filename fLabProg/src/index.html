@@ -10,85 +10,52 @@
 
 </head>
 <body>
-    <input type="file">
-    <button id="myBtn">Try it</button>
-    <pre id="file"></pre>
     <div class="container">
-        <div class="table-wrapper">
 
-            <div class="tact-wrapper">
+        <div class="header">
+            <div class="header-title">
+                Вы можете смоделировать и сравнить алгоритмы планирования процессов (FIFO и STRF)
             </div>
-            <div class="task-wrapper">
-<!--                <div class="task-string">-->
-<!--                    <div class="item task-id">P0</div>-->
-<!--                    <div class="task-tacts">-->
-<!--                        <div class="item">-->
-<!--                            Б-->
-<!--                        </div>-->
-<!--                        <div class="item item&#45;&#45;r">-->
-<!--                            Г-->
-<!--                        </div>-->
-<!--                        <div class="item item&#45;&#45;w">-->
-<!--                            Р-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="task-string">-->
-<!--                    <div class="item task-id">P0</div>-->
-<!--                    <div class="task-tacts">-->
-<!--                        <div class="item">-->
-<!--                            Б-->
-<!--                        </div>-->
-<!--                        <div class="item item&#45;&#45;r">-->
-<!--                            Г-->
-<!--                        </div>-->
-<!--                        <div class="item item&#45;&#45;w">-->
-<!--                            Р-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="task-string">-->
-<!--                    <div class="item task-id">P0</div>-->
-<!--                    <div class="task-tacts">-->
-<!--                        <div class="item">-->
-<!--                            Б-->
-<!--                        </div>-->
-<!--                        <div class="item item&#45;&#45;r">-->
-<!--                            Г-->
-<!--                        </div>-->
-<!--                        <div class="item item&#45;&#45;w">-->
-<!--                            Р-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="task-string">-->
-<!--                    <div class="item task-id">P0</div>-->
-<!--                    <div class="task-tacts">-->
-<!--                        <div class="item">-->
-<!--                            Б-->
-<!--                        </div>-->
-<!--                        <div class="item item&#45;&#45;r">-->
-<!--                            Г-->
-<!--                        </div>-->
-<!--                        <div class="item item&#45;&#45;w">-->
-<!--                            Р-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="task-string">-->
-<!--                    <div class="item task-id">P0</div>-->
-<!--                    <div class="task-tacts">-->
-<!--                        <div class="item">-->
-<!--                            Б-->
-<!--                        </div>-->
-<!--                        <div class="item item&#45;&#45;r">-->
-<!--                            Г-->
-<!--                        </div>-->
-<!--                        <div class="item item&#45;&#45;w">-->
-<!--                            Р-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
+
+            <div class="process-wrapper">
+                <div class="process-block">
+                    <div class="header-text">сгенерировав 20 тестовых значений</div>
+                    <div class="btn btn-generate">Сгенерировать</div>
+                </div>
+
+                <div class="header-text">или</div>
+
+                <div class="process-block">
+                    <div class="header-text">загрузив свои исходные данные</div>
+                    <div class="upload-wrapper">
+                        <input class="upload-area" type="file">
+                        <div class="btn btn-upload">Загрузить</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="fifo-wrapper">
+            <div class="table-wrapper">
+                <div class="tact-wrapper">
+                </div>
+                <div class="task-wrapper">
+                </div>
+            </div>
+            <div class="stats">
+
+            </div>
+        </div>
+
+        <div class="strf-wrapper">
+            <div class="table-wrapper">
+                <div class="tact-wrapper">
+                </div>
+                <div class="task-wrapper">
+                </div>
+            </div>
+            <div class="stats">
+
             </div>
         </div>
     </div>

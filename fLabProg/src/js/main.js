@@ -1,20 +1,22 @@
-import {fifoAlgo, generate, paintNums, paintString} from "./helpers";
-import {strf} from "./strf";
-import {readFile} from "./preprocess";
+import {algoProcess} from "./modules/algoProcess";
+import {algorithmsEnum} from "./modules/algorithms";
 
 window.addEventListener('DOMContentLoaded', () => {
     "use strict"
 
-    const cellWrapper = document.querySelector(".task-wrapper");
-    const tactWrapper = document.querySelector(".tact-wrapper");
-    // let data = generate(20);
-    // let processedData = fifoAlgo(data);
-    // paintNums(processedData, tactWrapper);
-    // paintString(processedData, cellWrapper);
+    const generateBtn = document.querySelector(".btn-generate"),
+        uploadBtn = document.querySelector(".btn-upload");
+    //     strfBtn = document.getElementById("strf-generate"),
+    //     fifoUploadBtn = document.getElementById("fifo-upload"),
+    //     strfUploadBtn = document.getElementById("strf-upload");
 
-    // let data = strf(generate(20));
-    // let processedData = fifoAlgo(data)
-    // paintNums(processedData, tactWrapper);
-    // paintString(processedData, cellWrapper);
-    
+    // let mainArr = [],
+    //     firstAnim = false;
+
+    // curtainAnim();
+
+    algoProcess(generateBtn);
+    algoProcess(uploadBtn, true);
+    // algoProcess(algorithmsEnum.UPLOAD_FIFO, fifoUploadBtn);
+    // algoProcess(algorithmsEnum.UPLOAD_STRF, strfUploadBtn);
 });
