@@ -1,10 +1,10 @@
-export function fifo(array) {
+export const fifo = (array) => {
     array.sort(( a, b ) =>  a["readyTime"] - b["readyTime"]);
 
     return array
 }
 
-export function strf(array) {
+export const strf = (array) => {
     let globalTime = 0
     array.sort((a, b) => a["readyTime"] - b["readyTime"])
     for (let i = 0; i < array.length; i++) {

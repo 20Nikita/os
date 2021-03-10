@@ -20,25 +20,22 @@ export const algoProcess = (btn, haveUploadData = false) => {
         }
     }
 
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", async () => {
         clearTable(taskWrappers);
         clearTable(tactWrappers);
 
         let data = [];
 
-        haveUploadData ? data = loadFileProcess() : data =  generate(20);
+        haveUploadData ? data = await loadFileProcess() : data = generate(20);
 
-        setTimeout(() => {
-            let fifoData = processArray(fifo(data));
-            paintNums(fifoData, fifoWrapper.querySelector(".tact-wrapper"));
-            paintString(fifoData, fifoWrapper.querySelector(".task-wrapper"));
-            calcStats(fifoData, fifoWrapper.querySelector(".stats"));
+        let fifoData = processArray(fifo(data));
+        paintNums(fifoData, fifoWrapper.querySelector(".tact-wrapper"));
+        paintString(fifoData, fifoWrapper.querySelector(".task-wrapper"));
+        calcStats(fifoData, fifoWrapper.querySelector(".stats"));
 
-            let strfData = processArray(strf(data));
-            paintNums(strfData, strfWrapper.querySelector(".tact-wrapper"));
-            paintString(strfData, strfWrapper.querySelector(".task-wrapper"));
-            calcStats(strfData, strfWrapper.querySelector(".stats"));
-        }, 1500)
-
+        let strfData = processArray(strf(data));
+        paintNums(strfData, strfWrapper.querySelector(".tact-wrapper"));
+        paintString(strfData, strfWrapper.querySelector(".task-wrapper"));
+        calcStats(strfData, strfWrapper.querySelector(".stats"));
     })
 }
