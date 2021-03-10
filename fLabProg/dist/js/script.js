@@ -9621,8 +9621,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "paintString", function() { return paintString; });
 /* harmony import */ var core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.array.reduce.js */ "./node_modules/core-js/modules/es.array.reduce.js");
 /* harmony import */ var core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var jstat__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! jstat */ "./node_modules/jstat/dist/jstat.js");
-/* harmony import */ var jstat__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(jstat__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.array.sort.js */ "./node_modules/core-js/modules/es.array.sort.js");
+/* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var jstat__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! jstat */ "./node_modules/jstat/dist/jstat.js");
+/* harmony import */ var jstat__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(jstat__WEBPACK_IMPORTED_MODULE_2__);
+
 
 
 var MEAN_TIME = 5,
@@ -9642,7 +9645,7 @@ var generate = function generate(tasksNum) {
   for (var i = 0; i < tasksNum; i++) {
     var data = [];
     data.id = i;
-    data.readyTime = Math.floor(jstat__WEBPACK_IMPORTED_MODULE_1__["jStat"].normal.sample(tasksNum, tasksNum));
+    data.readyTime = Math.floor(jstat__WEBPACK_IMPORTED_MODULE_2__["jStat"].normal.sample(tasksNum, tasksNum));
     if (data.readyTime < 0) data.readyTime = 0;
     data.workTime = Math.floor(getBaseLog(LOGBASE, 1 - Math.random())) + 1;
     data.prior = 5;
@@ -9707,6 +9710,10 @@ var paintNums = function paintNums(data, attachToEl) {
   }
 };
 var paintString = function paintString(data, attachToEl) {
+  data.sort(function (a, b) {
+    return a[0] - b[0];
+  });
+
   for (var i = 0; i < data.length; i++) {
     var string = document.createElement("div");
     string.classList.add("task-string");
@@ -9853,7 +9860,8 @@ var algoProcess = function algoProcess(btn) {
 
           case 10:
             //инициализируем исходные данные
-            //расчет, отрисовка для FIFO
+            console.log(data); //расчет, отрисовка для FIFO
+
             fifoData = Object(_helper_helpers__WEBPACK_IMPORTED_MODULE_6__["processArray"])(Object(_algorithms__WEBPACK_IMPORTED_MODULE_5__["fifo"])(data));
             Object(_helper_helpers__WEBPACK_IMPORTED_MODULE_6__["paintNums"])(fifoData, fifoWrapper.querySelector(".tact-wrapper"));
             Object(_helper_helpers__WEBPACK_IMPORTED_MODULE_6__["paintString"])(fifoData, fifoWrapper.querySelector(".task-wrapper"));
@@ -9864,7 +9872,7 @@ var algoProcess = function algoProcess(btn) {
             Object(_helper_helpers__WEBPACK_IMPORTED_MODULE_6__["paintString"])(strfData, strfWrapper.querySelector(".task-wrapper"));
             Object(_calcStats__WEBPACK_IMPORTED_MODULE_8__["calcStats"])(strfData, strfWrapper.querySelector(".stats"));
 
-          case 18:
+          case 19:
           case "end":
             return _context.stop();
         }

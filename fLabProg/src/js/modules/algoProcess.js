@@ -28,6 +28,7 @@ export const algoProcess = (btn, haveUploadData = false) => {
 
         haveUploadData ? data = await loadFileProcess() : data = generate(20);      //инициализируем исходные данные
 
+        console.log(data);
         //расчет, отрисовка для FIFO
         let fifoData = processArray(fifo(data));
         paintNums(fifoData, fifoWrapper.querySelector(".tact-wrapper"));
