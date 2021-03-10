@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
 
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     <link rel="stylesheet" href="css/base.min.css">
 
     <script type="text/javascript" src="js/script.js" defer></script>
@@ -28,7 +30,16 @@
                 <div class="process-block">
                     <div class="header-text">загрузив свои исходные данные</div>
                     <div class="upload-wrapper">
-                        <input class="upload-area" type="file">
+                        <div class="input-wrapper">
+                            <label class="label">
+                                <i class="material-icons">attach_file</i>
+                                <span class="title" id="upload_text">Добавить файл</span>
+                                <input class="upload-area"
+                                       id="upload_input"
+                                       type="file"
+                                       accept=".doc, .docx, .txt">
+                            </label>
+                        </div>
                         <div class="btn btn-upload">Загрузить</div>
                     </div>
                 </div>
@@ -36,6 +47,7 @@
         </div>
 
         <div class="fifo-wrapper">
+            <div class="table-title">Алгоритм FIFO</div>
             <div class="table-wrapper">
                 <div class="tact-wrapper">
                 </div>
@@ -48,6 +60,7 @@
         </div>
 
         <div class="strf-wrapper">
+            <div class="table-title">Алгоритм STRF</div>
             <div class="table-wrapper">
                 <div class="tact-wrapper">
                 </div>
