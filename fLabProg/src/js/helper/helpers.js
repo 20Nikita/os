@@ -83,6 +83,8 @@ export const paintNums = (data, attachToEl) => {
 
 export const paintString = (data, attachToEl) => {
 
+    data.sort(( a, b ) =>  a[0] - b[0]);
+
     for(let i = 0; i < data.length; i++){
         let string = document.createElement("div");
         string.classList.add("task-string");
