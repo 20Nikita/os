@@ -201,36 +201,6 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./node_modules/core-js/internals/array-method-has-species-support.js":
-/*!****************************************************************************!*\
-  !*** ./node_modules/core-js/internals/array-method-has-species-support.js ***!
-  \****************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var fails = __webpack_require__(/*! ../internals/fails */ "./node_modules/core-js/internals/fails.js");
-var wellKnownSymbol = __webpack_require__(/*! ../internals/well-known-symbol */ "./node_modules/core-js/internals/well-known-symbol.js");
-var V8_VERSION = __webpack_require__(/*! ../internals/engine-v8-version */ "./node_modules/core-js/internals/engine-v8-version.js");
-
-var SPECIES = wellKnownSymbol('species');
-
-module.exports = function (METHOD_NAME) {
-  // We can't use this feature detection in V8 since it causes
-  // deoptimization and serious performance degradation
-  // https://github.com/zloirock/core-js/issues/677
-  return V8_VERSION >= 51 || !fails(function () {
-    var array = [];
-    var constructor = array.constructor = {};
-    constructor[SPECIES] = function () {
-      return { foo: 1 };
-    };
-    return array[METHOD_NAME](Boolean).foo !== 1;
-  });
-};
-
-
-/***/ }),
-
 /***/ "./node_modules/core-js/internals/array-method-is-strict.js":
 /*!******************************************************************!*\
   !*** ./node_modules/core-js/internals/array-method-is-strict.js ***!
@@ -380,28 +350,6 @@ module.exports = function (bitmap, value) {
     writable: !(bitmap & 4),
     value: value
   };
-};
-
-
-/***/ }),
-
-/***/ "./node_modules/core-js/internals/create-property.js":
-/*!***********************************************************!*\
-  !*** ./node_modules/core-js/internals/create-property.js ***!
-  \***********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var toPrimitive = __webpack_require__(/*! ../internals/to-primitive */ "./node_modules/core-js/internals/to-primitive.js");
-var definePropertyModule = __webpack_require__(/*! ../internals/object-define-property */ "./node_modules/core-js/internals/object-define-property.js");
-var createPropertyDescriptor = __webpack_require__(/*! ../internals/create-property-descriptor */ "./node_modules/core-js/internals/create-property-descriptor.js");
-
-module.exports = function (object, key, value) {
-  var propertyKey = toPrimitive(key);
-  if (propertyKey in object) definePropertyModule.f(object, propertyKey, createPropertyDescriptor(0, value));
-  else object[propertyKey] = value;
 };
 
 
@@ -1002,24 +950,6 @@ module.exports = {
   has: has,
   enforce: enforce,
   getterFor: getterFor
-};
-
-
-/***/ }),
-
-/***/ "./node_modules/core-js/internals/is-array.js":
-/*!****************************************************!*\
-  !*** ./node_modules/core-js/internals/is-array.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var classof = __webpack_require__(/*! ../internals/classof-raw */ "./node_modules/core-js/internals/classof-raw.js");
-
-// `IsArray` abstract operation
-// https://tc39.es/ecma262/#sec-isarray
-module.exports = Array.isArray || function isArray(arg) {
-  return classof(arg) == 'Array';
 };
 
 
@@ -2170,65 +2100,6 @@ var CHROME_BUG = !IS_NODE && CHROME_VERSION > 79 && CHROME_VERSION < 83;
 $({ target: 'Array', proto: true, forced: !STRICT_METHOD || CHROME_BUG }, {
   reduce: function reduce(callbackfn /* , initialValue */) {
     return $reduce(this, callbackfn, arguments.length, arguments.length > 1 ? arguments[1] : undefined);
-  }
-});
-
-
-/***/ }),
-
-/***/ "./node_modules/core-js/modules/es.array.slice.js":
-/*!********************************************************!*\
-  !*** ./node_modules/core-js/modules/es.array.slice.js ***!
-  \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var $ = __webpack_require__(/*! ../internals/export */ "./node_modules/core-js/internals/export.js");
-var isObject = __webpack_require__(/*! ../internals/is-object */ "./node_modules/core-js/internals/is-object.js");
-var isArray = __webpack_require__(/*! ../internals/is-array */ "./node_modules/core-js/internals/is-array.js");
-var toAbsoluteIndex = __webpack_require__(/*! ../internals/to-absolute-index */ "./node_modules/core-js/internals/to-absolute-index.js");
-var toLength = __webpack_require__(/*! ../internals/to-length */ "./node_modules/core-js/internals/to-length.js");
-var toIndexedObject = __webpack_require__(/*! ../internals/to-indexed-object */ "./node_modules/core-js/internals/to-indexed-object.js");
-var createProperty = __webpack_require__(/*! ../internals/create-property */ "./node_modules/core-js/internals/create-property.js");
-var wellKnownSymbol = __webpack_require__(/*! ../internals/well-known-symbol */ "./node_modules/core-js/internals/well-known-symbol.js");
-var arrayMethodHasSpeciesSupport = __webpack_require__(/*! ../internals/array-method-has-species-support */ "./node_modules/core-js/internals/array-method-has-species-support.js");
-
-var HAS_SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('slice');
-
-var SPECIES = wellKnownSymbol('species');
-var nativeSlice = [].slice;
-var max = Math.max;
-
-// `Array.prototype.slice` method
-// https://tc39.es/ecma262/#sec-array.prototype.slice
-// fallback for not array-like ES3 strings and DOM objects
-$({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT }, {
-  slice: function slice(start, end) {
-    var O = toIndexedObject(this);
-    var length = toLength(O.length);
-    var k = toAbsoluteIndex(start, length);
-    var fin = toAbsoluteIndex(end === undefined ? length : end, length);
-    // inline `ArraySpeciesCreate` for usage native `Array#slice` where it's possible
-    var Constructor, result, n;
-    if (isArray(O)) {
-      Constructor = O.constructor;
-      // cross-realm fallback
-      if (typeof Constructor == 'function' && (Constructor === Array || isArray(Constructor.prototype))) {
-        Constructor = undefined;
-      } else if (isObject(Constructor)) {
-        Constructor = Constructor[SPECIES];
-        if (Constructor === null) Constructor = undefined;
-      }
-      if (Constructor === Array || Constructor === undefined) {
-        return nativeSlice.call(O, k, fin);
-      }
-    }
-    result = new (Constructor === undefined ? Array : Constructor)(max(fin - k, 0));
-    for (n = 0; k < fin; k++, n++) if (k in O) createProperty(result, n, O[k]);
-    result.length = n;
-    return result;
   }
 });
 
@@ -7588,7 +7459,7 @@ module.exports = g;
 /*!***************************!*\
   !*** ./src/js/helpers.js ***!
   \***************************/
-/*! exports provided: generate, fifoAlgo, paintNums, paintString */
+/*! exports provided: generate, fifoAlgo, paintNums, paintString, Effectevli */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7597,6 +7468,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fifoAlgo", function() { return fifoAlgo; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "paintNums", function() { return paintNums; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "paintString", function() { return paintString; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Effectevli", function() { return Effectevli; });
 /* harmony import */ var core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.array.reduce.js */ "./node_modules/core-js/modules/es.array.reduce.js");
 /* harmony import */ var core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var jstat__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! jstat */ "./node_modules/jstat/dist/jstat.js");
@@ -7709,6 +7581,26 @@ var paintString = function paintString(data, attachToEl) {
     attachToEl.appendChild(string);
   }
 };
+var Effectevli = function Effectevli(processedData) {
+  var resultArr = [];
+  var t_o = 0;
+  var t_i = 0;
+
+  for (var i = 0; i < processedData.length; i++) {
+    for (var j = 1; j < processedData[i].length; j++) {
+      if (processedData[i][j] == 1) {
+        t_i += 1;
+        t_o += 1;
+      } else if (processedData[i][j] == 2) {
+        t_i += 1;
+      }
+    }
+  }
+
+  resultArr.push(t_o / processedData.length);
+  resultArr.push(t_i / processedData.length);
+  return resultArr;
+};
 
 /***/ }),
 
@@ -7735,10 +7627,13 @@ window.addEventListener('DOMContentLoaded', function () {
   // let processedData = fifoAlgo(data);
   // paintNums(processedData, tactWrapper);
   // paintString(processedData, cellWrapper);
-  // let data = strf(generate(20));
-  // let processedData = fifoAlgo(data)
-  // paintNums(processedData, tactWrapper);
-  // paintString(processedData, cellWrapper);
+
+  var data = Object(_strf__WEBPACK_IMPORTED_MODULE_1__["strf"])(Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["generate"])(3));
+  var processedData = Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["fifoAlgo"])(data);
+  console.log(processedData);
+  console.log(Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["Effectevli"])(processedData));
+  Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["paintNums"])(processedData, tactWrapper);
+  Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["paintString"])(processedData, cellWrapper);
 });
 
 /***/ }),
@@ -7761,31 +7656,41 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+// срабатывает по нажатию кнопки myBtn 
 document.getElementById("myBtn").addEventListener("click", function () {
-  var boof = ["sfesr"];
-  var reader = new FileReader();
+  // создать файловую переменную
+  var reader = new FileReader(); // загрузить текст из первого загруженного пользователем файла в переменную reader
+
   reader.addEventListener('load', function () {
     document.getElementById('file').innerText = this.result;
   });
-  reader.readAsText(document.querySelector('input').files[0]);
+  reader.readAsText(document.querySelector('input').files[0]); // срабатывает после загрузки файла
 
   reader.onload = function () {
+    // разбить текст в файле на масив строк
     boof = reader.result.split("\n");
-    var mainArr = [];
+    var mainArr = []; // нада сделать глобальной переменной
+    // пройтись по каждой строке
 
     for (var i in boof) {
-      var t = boof[i].split(", ");
-      t[3] = t[3].split(";")[0];
-      var data = [];
-      data.id = t[0];
-      data.readyTime = Number(t[1]);
-      data.workTime = Number(t[2]);
-      data.prior = Number(t[3]);
-      mainArr.push(data);
-    }
+      var t = boof[i].split(", "); // разбить строку на подстроки
 
-    console.log(mainArr);
-  };
+      t[3] = t[3].split(";")[0]; // удалить символ ;
+
+      var data = []; // создать бач
+
+      data.id = t[0]; // добавить в него id
+
+      data.readyTime = Number(t[1]); // добавить в него время подачи заявки
+
+      data.workTime = Number(t[2]); // добавить в него время работы
+
+      data.prior = Number(t[3]); // добавить в него приоритет
+
+      mainArr.push(data); // загрузить элемент бача в массив
+    }
+  }; // не получилось прочитать файл
+
 
   reader.onerror = function () {
     console.log(reader.error);
@@ -7805,34 +7710,35 @@ document.getElementById("myBtn").addEventListener("click", function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "strf", function() { return strf; });
-/* harmony import */ var core_js_modules_es_array_slice_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.array.slice.js */ "./node_modules/core-js/modules/es.array.slice.js");
-/* harmony import */ var core_js_modules_es_array_slice_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_slice_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.array.sort.js */ "./node_modules/core-js/modules/es.array.sort.js");
-/* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./helpers */ "./src/js/helpers.js");
-
+/* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.array.sort.js */ "./node_modules/core-js/modules/es.array.sort.js");
+/* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./helpers */ "./src/js/helpers.js");
 
 
 function strf(array) {
-  var array1 = array.slice();
-  console.log(array1);
-  var globalTime = 0;
+  var globalTime = 0; // глобальное время, текущий момент времини
+
   array.sort(function (a, b) {
     return a["readyTime"] - b["readyTime"];
-  });
+  }); // сортировка масива по времини подачи заявки
 
   for (var i = 0; i < array.length; i++) {
+    // проход по всему масиву
     for (var j = i; j < array.length; j++) {
+      // проход по не отсартированной части
+      // если заявка от элемента еще не поступила то не расматриваем его
       if (globalTime < array[j]["readyTime"]) {
         break;
-      }
+      } // сортируем по времини работы
+
 
       if (array[i]["workTime"] > array[j]["workTime"]) {
         var t = array[i];
         array[i] = array[j];
         array[j] = t;
       }
-    }
+    } // выполняем следующюю команду
+
 
     globalTime += array[i]["workTime"];
   }
