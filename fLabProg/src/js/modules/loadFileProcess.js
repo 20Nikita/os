@@ -1,3 +1,13 @@
+export const loadToInput = () => {
+  const inputText = document.getElementById("upload_text"),
+      input = document.getElementById("upload_input");
+
+  input.addEventListener("change", () => {
+    let text = input.value.split("\\")
+    inputText.innerText = text[text.length - 1];
+  })
+}
+
 export const loadFileProcess = async () => {        // функция асинхронная
 
  return new Promise((resolve, reject) => {
