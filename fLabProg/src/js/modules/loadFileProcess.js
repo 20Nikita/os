@@ -1,33 +1,28 @@
-export const loadFileProcess = async () => {
+export const loadFileProcess = async () => {        // функция асинхронная
 
  return new Promise((resolve, reject) => {
-   let reader = new FileReader();  // создать файловую переменную
+   let reader = new FileReader();                   // создаем файловую переменную
    let loadData = [];
 
-   reader.readAsText(document.querySelector('.upload-area').files[0]);
+   reader.readAsText(document.querySelector('.upload-area').files[0]); // считываем данные из файла асинхронно
 
-   // не получилось прочитать файл
-   reader.onerror = () => {
-     console.log(reader.error);
-     return 1
+   reader.onerror = () => {                         // не удалось загрузить файл
+     reject(reader.error);
    };
 
-   // срабатывает после загрузки файла
-   reader.onload = () => {
-     // разбить текст в файле на масив строк
-     let boof = reader.result.split("\n");
-     // пройтись по каждой строке
-     for (let i = 0; i < boof.length; i++) {
-       let data = [];                         // создать бач
-       let t = boof[i].split(", ")   // разбить строку на подстроки
-       t[3] = t[3].split(";")[0]     // удалить символ ;
-       data.id = Number(t[0]);                       // добавить в него id
-       data.readyTime = Number(t[1]);                 // добавить в него время подачи заявки
-       data.workTime = Number(t[2]);                  // добавить в него время работы
-       data.prior = Number(t[3]);                    // добавить в него приоритет
-       loadData.push(data);                   // загрузить элемент бача в массив
+   reader.onload = () => {                          // ждем, пока файл загрузится
+     let boof = reader.result.split("\n");          // разбиваем текст в файле на масив строк
+     for (let i = 0; i < boof.length; i++) {        // пройтись по каждой строке
+       let data = [];                               // создать бач
+       let t = boof[i].split(", ")         // разбить строку на подстроки
+       t[3] = t[3].split(";")[0]           // удалить символ ;
+       data.id = Number(t[0]);                      // добавить в него id
+       data.readyTime = Number(t[1]);               // добавить в него время подачи заявки
+       data.workTime = Number(t[2]);                // добавить в него время работы
+       data.prior = Number(t[3]);                   // добавить в него приоритет
+       loadData.push(data);                         // загрузить элемент бача в массив
      }
-     resolve(loadData);
+     resolve(loadData);                             //возвращаем данные из промиса
    };
  })
 }

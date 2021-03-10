@@ -10,7 +10,7 @@ export const algoProcess = (btn, haveUploadData = false) => {
         taskWrappers = document.querySelectorAll(".task-wrapper"),
         tactWrappers = document.querySelectorAll(".tact-wrapper");
 
-    const clearTable = (wrappers) => {
+    const clearTable = (wrappers) => {                              //очистка таблиц
         if(wrappers) {
             wrappers.forEach(wrapper => {
                 while (wrapper.firstChild) {
@@ -20,19 +20,21 @@ export const algoProcess = (btn, haveUploadData = false) => {
         }
     }
 
-    btn.addEventListener("click", async () => {
-        clearTable(taskWrappers);
+    btn.addEventListener("click", async () => {                             //функция асинхронная, т.к. внутри есть асинхронный код
+        clearTable(taskWrappers);                                           //очищаем таблицы
         clearTable(tactWrappers);
 
         let data = [];
 
-        haveUploadData ? data = await loadFileProcess() : data = generate(20);
+        haveUploadData ? data = await loadFileProcess() : data = generate(20);      //инициализируем исходные данные
 
+        //расчет, отрисовка для FIFO
         let fifoData = processArray(fifo(data));
         paintNums(fifoData, fifoWrapper.querySelector(".tact-wrapper"));
         paintString(fifoData, fifoWrapper.querySelector(".task-wrapper"));
         calcStats(fifoData, fifoWrapper.querySelector(".stats"));
 
+        //расчет, отрисовка для STRF
         let strfData = processArray(strf(data));
         paintNums(strfData, strfWrapper.querySelector(".tact-wrapper"));
         paintString(strfData, strfWrapper.querySelector(".task-wrapper"));
