@@ -1,5 +1,7 @@
+
 import {algoProcess} from "./modules/algoProcess";
 import {algorithmsEnum} from "./modules/algorithms";
+
 
 window.addEventListener('DOMContentLoaded', () => {
     "use strict"
@@ -19,4 +21,5 @@ window.addEventListener('DOMContentLoaded', () => {
     algoProcess(uploadBtn, true);
     // algoProcess(algorithmsEnum.UPLOAD_FIFO, fifoUploadBtn);
     // algoProcess(algorithmsEnum.UPLOAD_STRF, strfUploadBtn);
+
 });

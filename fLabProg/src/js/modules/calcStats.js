@@ -1,5 +1,4 @@
 export const calcStats = (processedData, appendToEl) => {
-    let resultArr = [];
     let t_o = 0;
     let t_i = 0;
     for (let i = 0; i < processedData.length;i++){
@@ -13,8 +12,7 @@ export const calcStats = (processedData, appendToEl) => {
             }
         }
     }
-    resultArr.push(t_o/processedData.length)
-    resultArr.push(t_i/processedData.length)
+    let result = "Среднее время ожидания: " + t_o/processedData.length + " Среднее время исполнения: " + t_i/processedData.length
 
-    appendToEl.innerHTML = `${resultArr}`
+    appendToEl.innerHTML = result
 }

@@ -7781,7 +7781,7 @@ module.exports = g;
 /*!**********************************!*\
   !*** ./src/js/helper/helpers.js ***!
   \**********************************/
-/*! exports provided: generate, processArray, paintNums, paintString */
+/*! exports provided: generate, processArray, paintNums, paintString, Effectevli */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7790,6 +7790,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "processArray", function() { return processArray; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "paintNums", function() { return paintNums; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "paintString", function() { return paintString; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Effectevli", function() { return Effectevli; });
 /* harmony import */ var core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.array.reduce.js */ "./node_modules/core-js/modules/es.array.reduce.js");
 /* harmony import */ var core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var jstat__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! jstat */ "./node_modules/jstat/dist/jstat.js");
@@ -7908,6 +7909,26 @@ var paintString = function paintString(data, attachToEl) {
 
     attachToEl.appendChild(string);
   }
+};
+var Effectevli = function Effectevli(processedData) {
+  var resultArr = [];
+  var t_o = 0;
+  var t_i = 0;
+
+  for (var i = 0; i < processedData.length; i++) {
+    for (var j = 1; j < processedData[i].length; j++) {
+      if (processedData[i][j] == 1) {
+        t_i += 1;
+        t_o += 1;
+      } else if (processedData[i][j] == 2) {
+        t_i += 1;
+      }
+    }
+  }
+
+  resultArr.push(t_o / processedData.length);
+  resultArr.push(t_i / processedData.length);
+  return resultArr;
 };
 
 /***/ }),
@@ -8065,7 +8086,6 @@ function strf(array) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "calcStats", function() { return calcStats; });
 var calcStats = function calcStats(processedData, appendToEl) {
-  var resultArr = [];
   var t_o = 0;
   var t_i = 0;
 
@@ -8080,9 +8100,8 @@ var calcStats = function calcStats(processedData, appendToEl) {
     }
   }
 
-  resultArr.push(t_o / processedData.length);
-  resultArr.push(t_i / processedData.length);
-  appendToEl.innerHTML = "".concat(resultArr);
+  var result = "Среднее время ожидания: " + t_o / processedData.length + " Среднее время исполнения: " + t_i / processedData.length;
+  appendToEl.innerHTML = result;
 };
 
 /***/ }),
