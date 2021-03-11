@@ -9644,7 +9644,7 @@ var generate = function generate(tasksNum) {
 
   for (var i = 0; i < tasksNum; i++) {
     var data = [];
-    data.id = i;
+    data.id = Math.floor(Math.random() * tasksNum);
     data.readyTime = Math.floor(jstat__WEBPACK_IMPORTED_MODULE_2__["jStat"].normal.sample(tasksNum, tasksNum));
     if (data.readyTime < 0) data.readyTime = 0;
     data.workTime = Math.floor(getBaseLog(LOGBASE, 1 - Math.random())) + 1;

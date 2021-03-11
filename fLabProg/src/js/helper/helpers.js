@@ -16,7 +16,7 @@ export const generate = (tasksNum) => {
 
     for(let i = 0; i < tasksNum; i++){
         let data = [];
-        data.id = i;
+        data.id = Math.floor(Math.random()*tasksNum);
         data.readyTime = Math.floor(jStat.normal.sample(tasksNum, tasksNum));
         if(data.readyTime < 0) data.readyTime = 0;
         data.workTime = Math.floor(getBaseLog(LOGBASE, 1 - Math.random())) + 1;
