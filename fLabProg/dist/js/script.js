@@ -9610,7 +9610,7 @@ module.exports = g;
 /*!**********************************!*\
   !*** ./src/js/helper/helpers.js ***!
   \**********************************/
-/*! exports provided: generate, processArray, paintNums, paintString */
+/*! exports provided: generate, processArray, paintNums, paintString, paintInputData */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -9619,6 +9619,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "processArray", function() { return processArray; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "paintNums", function() { return paintNums; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "paintString", function() { return paintString; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "paintInputData", function() { return paintInputData; });
 /* harmony import */ var core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.array.reduce.js */ "./node_modules/core-js/modules/es.array.reduce.js");
 /* harmony import */ var core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.array.sort.js */ "./node_modules/core-js/modules/es.array.sort.js");
@@ -9644,7 +9645,7 @@ var generate = function generate(tasksNum) {
 
   for (var i = 0; i < tasksNum; i++) {
     var data = [];
-    data.id = i;
+    data.id = Math.floor(Math.random() * tasksNum);
     data.readyTime = Math.floor(jstat__WEBPACK_IMPORTED_MODULE_2__["jStat"].normal.sample(tasksNum, tasksNum));
     if (data.readyTime < 0) data.readyTime = 0;
     data.workTime = Math.floor(getBaseLog(LOGBASE, 1 - Math.random())) + 1;
@@ -9743,6 +9744,11 @@ var paintString = function paintString(data, attachToEl) {
     }
 
     attachToEl.appendChild(string);
+  }
+};
+var paintInputData = function paintInputData(inpData, atachToEl) {
+  for (var i = 0; i < inpData.length; i++) {
+    var dataBlock = document.createElement("div");
   }
 };
 
