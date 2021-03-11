@@ -24,9 +24,8 @@ export const loadFileProcess = async () => {        // функция асинх
      let boof = reader.result.split("\n");          // разбиваем текст в файле на масив строк
      for (let i = 0; i < boof.length; i++) {        // пройтись по каждой строке
        let data = [];                               // создать бач
-       let t = boof[i].split(", ")         // разбить строку на подстроки
-       t[3] = t[3].split(";")[0]           // удалить символ ;
-       data.uid = i;                                // уникальное имя
+       let t = boof[i].split(", ")                  // разбить строку на подстроки
+       t[3] = t[3].split(";")[0]                    // удалить символ ;
        data.id = Number(t[0]);                      // добавить в него id
        data.readyTime = Number(t[1]);               // добавить в него время подачи заявки
        data.workTime = Number(t[2]);                // добавить в него время работы
