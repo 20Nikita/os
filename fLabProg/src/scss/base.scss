@@ -194,6 +194,11 @@
   &-string{
     width: 100%;
     display: flex;
+    border-top: 1px solid black;
+
+    &:first-child{
+      border-top: none;
+    }
   }
 
   &-block{

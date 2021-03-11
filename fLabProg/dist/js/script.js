@@ -9620,16 +9620,30 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "paintNums", function() { return paintNums; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "paintString", function() { return paintString; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "paintInputData", function() { return paintInputData; });
-/* harmony import */ var core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.array.reduce.js */ "./node_modules/core-js/modules/es.array.reduce.js");
-/* harmony import */ var core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.array.sort.js */ "./node_modules/core-js/modules/es.array.sort.js");
-/* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var jstat__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! jstat */ "./node_modules/jstat/dist/jstat.js");
-/* harmony import */ var jstat__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(jstat__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var regenerator_runtime_runtime_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! regenerator-runtime/runtime.js */ "./node_modules/regenerator-runtime/runtime.js");
+/* harmony import */ var regenerator_runtime_runtime_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es_promise_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.promise.js */ "./node_modules/core-js/modules/es.promise.js");
+/* harmony import */ var core_js_modules_es_promise_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_promise_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es.object.to-string.js */ "./node_modules/core-js/modules/es.object.to-string.js");
+/* harmony import */ var core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es.array.reduce.js */ "./node_modules/core-js/modules/es.array.reduce.js");
+/* harmony import */ var core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es.array.sort.js */ "./node_modules/core-js/modules/es.array.sort.js");
+/* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var jstat__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! jstat */ "./node_modules/jstat/dist/jstat.js");
+/* harmony import */ var jstat__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(jstat__WEBPACK_IMPORTED_MODULE_5__);
 
 
 
-var MEAN_TIME = 5,
+
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
+var MEAN_TIME = 20,
     LOGBASE = 0.8;
 
 var getBaseLog = function getBaseLog(x, y) {
@@ -9640,25 +9654,46 @@ var pushData = function pushData(arr, state) {
   arr.push(state);
 };
 
-var generate = function generate(tasksNum) {
-  var mainArr = [];
+var generate = /*#__PURE__*/function () {
+  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(tasksNum) {
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            return _context.abrupt("return", new Promise(function (resolve) {
+              var mainArr = [];
 
-  for (var i = 0; i < tasksNum; i++) {
-    var data = [];
-    data.id = Math.floor(Math.random() * tasksNum);
-    data.readyTime = Math.floor(jstat__WEBPACK_IMPORTED_MODULE_2__["jStat"].normal.sample(tasksNum, tasksNum));
-    if (data.readyTime < 0) data.readyTime = 0;
-    data.workTime = Math.floor(getBaseLog(LOGBASE, 1 - Math.random())) + 1;
-    data.prior = 5;
-    mainArr.push(data);
-  }
+              for (var i = 0; i < tasksNum; i++) {
+                var data = [];
+                data.uid = i;
+                data.id = Math.floor(Math.random() * tasksNum);
+                data.readyTime = Math.floor(jstat__WEBPACK_IMPORTED_MODULE_5__["jStat"].normal.sample(MEAN_TIME, MEAN_TIME));
+                if (data.readyTime < 0) data.readyTime = 0;
+                data.workTime = Math.floor(getBaseLog(LOGBASE, 1 - Math.random())) + 1;
+                data.prior = 5;
+                mainArr.push(data);
+              }
 
-  return mainArr;
-};
+              resolve(mainArr);
+            }));
+
+          case 1:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee);
+  }));
+
+  return function generate(_x) {
+    return _ref.apply(this, arguments);
+  };
+}();
 var processArray = function processArray(data) {
   var resultArr = [],
       resultItem = [],
       lastWorkTime = 0;
+  resultItem.push(data[0]["uid"]);
   resultItem.push(data[0]["id"]);
 
   for (var j = 0; j < data[0]["readyTime"]; j++) {
@@ -9674,6 +9709,7 @@ var processArray = function processArray(data) {
 
   for (var i = 1; i < data.length; i++) {
     resultItem = [];
+    resultItem.push(data[i]["uid"]);
     resultItem.push(data[i]["id"]);
 
     for (var _j2 = 0; _j2 < data[i]["readyTime"]; _j2++) {
@@ -9683,7 +9719,7 @@ var processArray = function processArray(data) {
     if (lastWorkTime > data[i]["readyTime"]) {
       var diff = lastWorkTime - data[i].readyTime;
 
-      for (var _j3 = 0; _j3 < diff - 1; _j3++) {
+      for (var _j3 = 0; _j3 < diff - 2; _j3++) {
         pushData(resultItem, 1);
       }
     }
@@ -9703,7 +9739,7 @@ var paintNums = function paintNums(data, attachToEl) {
     return a[p].length > c.length ? p : i;
   }, 0);
 
-  for (var i = 0; i < data[maxLengthIndex].length - 1; i++) {
+  for (var i = 0; i < data[maxLengthIndex].length - 2; i++) {
     var cell = document.createElement("div");
     cell.classList.add("item");
     cell.innerText = "".concat(i);
@@ -9720,10 +9756,10 @@ var paintString = function paintString(data, attachToEl) {
     string.classList.add("task-string");
     var idCell = document.createElement("div");
     idCell.classList.add("item", "task-id");
-    idCell.innerText = "P".concat(data[i][0]);
+    idCell.innerText = "P".concat(data[i][1]);
     string.appendChild(idCell);
 
-    for (var j = 1; j < data[i].length; j++) {
+    for (var j = 2; j < data[i].length; j++) {
       var _cell$classList;
 
       var cell = document.createElement("div");
@@ -9746,9 +9782,21 @@ var paintString = function paintString(data, attachToEl) {
     attachToEl.appendChild(string);
   }
 };
-var paintInputData = function paintInputData(inpData, atachToEl) {
+var paintInputData = function paintInputData(inpData, attachToEl) {
   for (var i = 0; i < inpData.length; i++) {
-    var dataBlock = document.createElement("div");
+    var dataString = document.createElement("div");
+    dataString.classList.add("input-data-string");
+
+    for (var data in inpData[i]) {
+      if (data !== "uid") {
+        var dataBlock = document.createElement("div");
+        dataBlock.classList.add("input-data-block");
+        dataBlock.innerText = "".concat(inpData[i][data]);
+        dataString.appendChild(dataBlock);
+      }
+    }
+
+    attachToEl.appendChild(dataString);
   }
 };
 
@@ -9823,7 +9871,8 @@ var algoProcess = function algoProcess(btn) {
   var fifoWrapper = document.querySelector(".fifo-wrapper"),
       strfWrapper = document.querySelector(".strf-wrapper"),
       taskWrappers = document.querySelectorAll(".task-wrapper"),
-      tactWrappers = document.querySelectorAll(".tact-wrapper");
+      tactWrappers = document.querySelectorAll(".tact-wrapper"),
+      inputDataTable = document.querySelector(".input-data-table");
 
   var clearTable = function clearTable(wrappers) {
     //очистка таблиц
@@ -9858,15 +9907,19 @@ var algoProcess = function algoProcess(btn) {
 
           case 6:
             data = _context.sent;
-            _context.next = 10;
+            _context.next = 12;
             break;
 
           case 9:
-            data = Object(_helper_helpers__WEBPACK_IMPORTED_MODULE_6__["generate"])(20);
+            _context.next = 11;
+            return Object(_helper_helpers__WEBPACK_IMPORTED_MODULE_6__["generate"])(20);
 
-          case 10:
+          case 11:
+            data = _context.sent;
+
+          case 12:
             //инициализируем исходные данные
-            console.log(data); //расчет, отрисовка для FIFO
+            Object(_helper_helpers__WEBPACK_IMPORTED_MODULE_6__["paintInputData"])(data, inputDataTable); //расчет, отрисовка для FIFO
 
             fifoData = Object(_helper_helpers__WEBPACK_IMPORTED_MODULE_6__["processArray"])(Object(_algorithms__WEBPACK_IMPORTED_MODULE_5__["fifo"])(data));
             Object(_helper_helpers__WEBPACK_IMPORTED_MODULE_6__["paintNums"])(fifoData, fifoWrapper.querySelector(".tact-wrapper"));
@@ -9878,7 +9931,7 @@ var algoProcess = function algoProcess(btn) {
             Object(_helper_helpers__WEBPACK_IMPORTED_MODULE_6__["paintString"])(strfData, strfWrapper.querySelector(".task-wrapper"));
             Object(_calcStats__WEBPACK_IMPORTED_MODULE_8__["calcStats"])(strfData, strfWrapper.querySelector(".stats"));
 
-          case 19:
+          case 21:
           case "end":
             return _context.stop();
         }
@@ -10037,6 +10090,8 @@ var loadFileProcess = /*#__PURE__*/function () {
                   var t = boof[i].split(", "); // разбить строку на подстроки
 
                   t[3] = t[3].split(";")[0]; // удалить символ ;
+
+                  data.uid = i; // уникальное имя
 
                   data.id = Number(t[0]); // добавить в него id
 

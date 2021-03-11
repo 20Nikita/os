@@ -1,5 +1,5 @@
 import {fifo, strf} from "./algorithms";
-import {generate, paintNums, paintString, processArray} from "../helper/helpers";
+import {generate, paintInputData, paintNums, paintString, processArray} from "../helper/helpers";
 import {loadFileProcess} from "./loadFileProcess";
 import {calcStats} from "./calcStats";
 
@@ -8,7 +8,8 @@ export const algoProcess = (btn, haveUploadData = false) => {
     const fifoWrapper = document.querySelector(".fifo-wrapper"),
         strfWrapper = document.querySelector(".strf-wrapper"),
         taskWrappers = document.querySelectorAll(".task-wrapper"),
-        tactWrappers = document.querySelectorAll(".tact-wrapper");
+        tactWrappers = document.querySelectorAll(".tact-wrapper"),
+        inputDataTable = document.querySelector(".input-data-table");
 
     const clearTable = (wrappers) => {                              //очистка таблиц
         if(wrappers) {
@@ -26,9 +27,9 @@ export const algoProcess = (btn, haveUploadData = false) => {
 
         let data = [];
 
-        haveUploadData ? data = await loadFileProcess() : data = generate(20);      //инициализируем исходные данные
+        haveUploadData ? data = await loadFileProcess() : data = await generate(20);      //инициализируем исходные данные
 
-        console.log(data);
+        paintInputData(data, inputDataTable)
         //расчет, отрисовка для FIFO
         let fifoData = processArray(fifo(data));
         paintNums(fifoData, fifoWrapper.querySelector(".tact-wrapper"));
