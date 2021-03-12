@@ -95,7 +95,7 @@
       justify-content: center;
       margin-top: 10px;
 
-      .upload-wrapper {
+      .data-enter-wrapper {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -114,6 +114,16 @@
               opacity: 0;
               pointer-events: none;
               user-select: none;
+            }
+
+            input[type=text]{
+              display: inline-block;
+              padding: 6px 12px;
+              color: black;
+              font-size: 20px;
+              border: 1px solid black;
+              border-radius: 4px;
+              background: none;
             }
 
             .label{
@@ -219,8 +229,6 @@
   &-wrapper {
     overflow-x: auto;
     width: 100%;
-    height: 628px;
-    border: 1px solid black;
     border-radius: 4px;
     position: relative;
   }
@@ -229,12 +237,21 @@
     margin-bottom: 10px;
   }
 }
+
 .tact {
   &-wrapper {
     width: max-content;
     display: flex;
     align-items: center;
     margin-left: 28px;
+
+    .item{
+      border-top: 1px solid black;
+
+      &:last-child{
+        border-right: 1px solid black;
+      }
+    }
   }
 }
 
@@ -245,13 +262,15 @@
   &-string{
     display: flex;
     align-items: center;
-    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+
+    &:first-child{
+      border-top: 1px solid black;
+    }
   }
   &-tacts{
     display: flex;
     align-items: center;
-  }
-  &-id{
-    border-left: none;
   }
 }
