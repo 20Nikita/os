@@ -17,7 +17,6 @@ export const generate = async (tasksNum) => {
 
         for (let i = 0; i < tasksNum; i++) {
             let data = [];
-            data.uid = i;
             data.id = Math.floor(Math.random() * tasksNum);
             data.readyTime = Math.floor(jStat.normal.sample(MEAN_TIME, MEAN_TIME));
             if (data.readyTime < 0) data.readyTime = 0;
@@ -35,7 +34,6 @@ export const processArray = (data) => {
         resultItem = [],
         lastWorkTime = 0;
 
-    resultItem.push(data[0]["uid"]);
     resultItem.push(data[0]["id"]);
 
     for(let j = 0; j < data[0]["readyTime"]; j++){
@@ -50,7 +48,6 @@ export const processArray = (data) => {
 
     for(let i = 1; i < data.length; i++){
         resultItem = [];
-        resultItem.push(data[i]["uid"]);
         resultItem.push(data[i]["id"]);
 
         for(let j = 0; j < data[i]["readyTime"]; j++){
@@ -60,7 +57,7 @@ export const processArray = (data) => {
         if(lastWorkTime > (data[i]["readyTime"])){
             let diff = lastWorkTime - data[i].readyTime;
 
-            for(let j = 0; j < diff - 2; j++){
+            for(let j = 0; j < diff - 1; j++){
                 pushData(resultItem, 1)
             }
         }
@@ -73,12 +70,29 @@ export const processArray = (data) => {
         resultArr.push(resultItem);
     }
 
+    let maxLength = resultArr.length - 1;
+    
+    for(let i = 0; i < resultArr.length; i++){
+        for(let j = resultArr[i].length; j < resultArr[maxLength].length; j++)
+            pushData(resultArr[i], 0);
+    }
+    resultArr.sort((a, b) => a[0] - b[0]);
+    for(let i = 0; i < resultArr.length-1; i++){
+        if(resultArr[i][0] == resultArr[i+1][0]){
+            for(let j = 1; j < resultArr[i].length; j++){
+                if(resultArr[i][j] > resultArr[i+1][j])
+                    resultArr[i+1][j] = resultArr[i][j]
+            }
+            resultArr.splice(i, 1)
+            i-=1
+        }
+    }
     return resultArr;
 }
 
 export const paintNums = (data, attachToEl) => {
     let maxLengthIndex = data.reduce((p, c, i, a) => a[p].length > c.length ? p : i, 0);
-    for (let i = 0; i < data[maxLengthIndex].length - 2; i++){
+    for (let i = 0; i < data[maxLengthIndex].length - 1; i++){
         let cell = document.createElement("div");
         cell.classList.add("item");
         cell.innerText = `${i}`;
@@ -87,18 +101,15 @@ export const paintNums = (data, attachToEl) => {
 }
 
 export const paintString = (data, attachToEl) => {
-
-    data.sort((a, b) => a[0] - b[0]);
-
     for(let i = 0; i < data.length; i++){
         let string = document.createElement("div");
         string.classList.add("task-string");
         let idCell = document.createElement("div");
         idCell.classList.add("item", "task-id");
-        idCell.innerText = `P${data[i][1]}`
+        idCell.innerText = `P${data[i][0]}`
         string.appendChild(idCell);
 
-        for(let j = 2; j < data[i].length; j ++) {
+        for(let j = 1; j < data[0].length; j ++) {
             let cell = document.createElement("div");
             cell.innerText = "Б"
             let styleClass = ["item"];
@@ -111,7 +122,7 @@ export const paintString = (data, attachToEl) => {
                 cell.innerText = "Р"
                 styleClass.push("item--w");
             }
-
+            
             cell.classList.add(...styleClass)
             string.appendChild(cell);
         }
@@ -120,6 +131,8 @@ export const paintString = (data, attachToEl) => {
 }
 
 export const paintInputData = (inpData, attachToEl) => {
+    inpData.sort((a, b) => a["id"] - b["id"]);
+
     for (let i = 0; i < inpData.length; i++) {
         let dataString = document.createElement("div");
         dataString.classList.add("input-data-string");

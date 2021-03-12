@@ -323,6 +323,36 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/internals/array-method-has-species-support.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/core-js/internals/array-method-has-species-support.js ***!
+  \****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var fails = __webpack_require__(/*! ../internals/fails */ "./node_modules/core-js/internals/fails.js");
+var wellKnownSymbol = __webpack_require__(/*! ../internals/well-known-symbol */ "./node_modules/core-js/internals/well-known-symbol.js");
+var V8_VERSION = __webpack_require__(/*! ../internals/engine-v8-version */ "./node_modules/core-js/internals/engine-v8-version.js");
+
+var SPECIES = wellKnownSymbol('species');
+
+module.exports = function (METHOD_NAME) {
+  // We can't use this feature detection in V8 since it causes
+  // deoptimization and serious performance degradation
+  // https://github.com/zloirock/core-js/issues/677
+  return V8_VERSION >= 51 || !fails(function () {
+    var array = [];
+    var constructor = array.constructor = {};
+    constructor[SPECIES] = function () {
+      return { foo: 1 };
+    };
+    return array[METHOD_NAME](Boolean).foo !== 1;
+  });
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/internals/array-method-is-strict.js":
 /*!******************************************************************!*\
   !*** ./node_modules/core-js/internals/array-method-is-strict.js ***!
@@ -589,6 +619,28 @@ module.exports = function (bitmap, value) {
     writable: !(bitmap & 4),
     value: value
   };
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/internals/create-property.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/core-js/internals/create-property.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var toPrimitive = __webpack_require__(/*! ../internals/to-primitive */ "./node_modules/core-js/internals/to-primitive.js");
+var definePropertyModule = __webpack_require__(/*! ../internals/object-define-property */ "./node_modules/core-js/internals/object-define-property.js");
+var createPropertyDescriptor = __webpack_require__(/*! ../internals/create-property-descriptor */ "./node_modules/core-js/internals/create-property-descriptor.js");
+
+module.exports = function (object, key, value) {
+  var propertyKey = toPrimitive(key);
+  if (propertyKey in object) definePropertyModule.f(object, propertyKey, createPropertyDescriptor(0, value));
+  else object[propertyKey] = value;
 };
 
 
@@ -3097,6 +3149,86 @@ $({ target: 'Array', proto: true, forced: FORCED }, {
     return comparefn === undefined
       ? nativeSort.call(toObject(this))
       : nativeSort.call(toObject(this), aFunction(comparefn));
+  }
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es.array.splice.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/core-js/modules/es.array.splice.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $ = __webpack_require__(/*! ../internals/export */ "./node_modules/core-js/internals/export.js");
+var toAbsoluteIndex = __webpack_require__(/*! ../internals/to-absolute-index */ "./node_modules/core-js/internals/to-absolute-index.js");
+var toInteger = __webpack_require__(/*! ../internals/to-integer */ "./node_modules/core-js/internals/to-integer.js");
+var toLength = __webpack_require__(/*! ../internals/to-length */ "./node_modules/core-js/internals/to-length.js");
+var toObject = __webpack_require__(/*! ../internals/to-object */ "./node_modules/core-js/internals/to-object.js");
+var arraySpeciesCreate = __webpack_require__(/*! ../internals/array-species-create */ "./node_modules/core-js/internals/array-species-create.js");
+var createProperty = __webpack_require__(/*! ../internals/create-property */ "./node_modules/core-js/internals/create-property.js");
+var arrayMethodHasSpeciesSupport = __webpack_require__(/*! ../internals/array-method-has-species-support */ "./node_modules/core-js/internals/array-method-has-species-support.js");
+
+var HAS_SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('splice');
+
+var max = Math.max;
+var min = Math.min;
+var MAX_SAFE_INTEGER = 0x1FFFFFFFFFFFFF;
+var MAXIMUM_ALLOWED_LENGTH_EXCEEDED = 'Maximum allowed length exceeded';
+
+// `Array.prototype.splice` method
+// https://tc39.es/ecma262/#sec-array.prototype.splice
+// with adding support of @@species
+$({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT }, {
+  splice: function splice(start, deleteCount /* , ...items */) {
+    var O = toObject(this);
+    var len = toLength(O.length);
+    var actualStart = toAbsoluteIndex(start, len);
+    var argumentsLength = arguments.length;
+    var insertCount, actualDeleteCount, A, k, from, to;
+    if (argumentsLength === 0) {
+      insertCount = actualDeleteCount = 0;
+    } else if (argumentsLength === 1) {
+      insertCount = 0;
+      actualDeleteCount = len - actualStart;
+    } else {
+      insertCount = argumentsLength - 2;
+      actualDeleteCount = min(max(toInteger(deleteCount), 0), len - actualStart);
+    }
+    if (len + insertCount - actualDeleteCount > MAX_SAFE_INTEGER) {
+      throw TypeError(MAXIMUM_ALLOWED_LENGTH_EXCEEDED);
+    }
+    A = arraySpeciesCreate(O, actualDeleteCount);
+    for (k = 0; k < actualDeleteCount; k++) {
+      from = actualStart + k;
+      if (from in O) createProperty(A, k, O[from]);
+    }
+    A.length = actualDeleteCount;
+    if (insertCount < actualDeleteCount) {
+      for (k = actualStart; k < len - actualDeleteCount; k++) {
+        from = k + actualDeleteCount;
+        to = k + insertCount;
+        if (from in O) O[to] = O[from];
+        else delete O[to];
+      }
+      for (k = len; k > len - actualDeleteCount + insertCount; k--) delete O[k - 1];
+    } else if (insertCount > actualDeleteCount) {
+      for (k = len - actualDeleteCount; k > actualStart; k--) {
+        from = k + actualDeleteCount - 1;
+        to = k + insertCount - 1;
+        if (from in O) O[to] = O[from];
+        else delete O[to];
+      }
+    }
+    for (k = 0; k < insertCount; k++) {
+      O[k + actualStart] = arguments[k + 2];
+    }
+    O.length = len - actualDeleteCount + insertCount;
+    return A;
   }
 });
 
@@ -9626,12 +9758,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es_promise_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_promise_js__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es.object.to-string.js */ "./node_modules/core-js/modules/es.object.to-string.js");
 /* harmony import */ var core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es.array.reduce.js */ "./node_modules/core-js/modules/es.array.reduce.js");
-/* harmony import */ var core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es.array.sort.js */ "./node_modules/core-js/modules/es.array.sort.js");
-/* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var jstat__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! jstat */ "./node_modules/jstat/dist/jstat.js");
-/* harmony import */ var jstat__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(jstat__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es.array.sort.js */ "./node_modules/core-js/modules/es.array.sort.js");
+/* harmony import */ var core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_sort_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es_array_splice_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es.array.splice.js */ "./node_modules/core-js/modules/es.array.splice.js");
+/* harmony import */ var core_js_modules_es_array_splice_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_splice_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es.array.reduce.js */ "./node_modules/core-js/modules/es.array.reduce.js");
+/* harmony import */ var core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_reduce_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var jstat__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! jstat */ "./node_modules/jstat/dist/jstat.js");
+/* harmony import */ var jstat__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(jstat__WEBPACK_IMPORTED_MODULE_6__);
+
 
 
 
@@ -9665,9 +9800,8 @@ var generate = /*#__PURE__*/function () {
 
               for (var i = 0; i < tasksNum; i++) {
                 var data = [];
-                data.uid = i;
                 data.id = Math.floor(Math.random() * tasksNum);
-                data.readyTime = Math.floor(jstat__WEBPACK_IMPORTED_MODULE_5__["jStat"].normal.sample(MEAN_TIME, MEAN_TIME));
+                data.readyTime = Math.floor(jstat__WEBPACK_IMPORTED_MODULE_6__["jStat"].normal.sample(MEAN_TIME, MEAN_TIME));
                 if (data.readyTime < 0) data.readyTime = 0;
                 data.workTime = Math.floor(getBaseLog(LOGBASE, 1 - Math.random())) + 1;
                 data.prior = 5;
@@ -9693,7 +9827,6 @@ var processArray = function processArray(data) {
   var resultArr = [],
       resultItem = [],
       lastWorkTime = 0;
-  resultItem.push(data[0]["uid"]);
   resultItem.push(data[0]["id"]);
 
   for (var j = 0; j < data[0]["readyTime"]; j++) {
@@ -9709,7 +9842,6 @@ var processArray = function processArray(data) {
 
   for (var i = 1; i < data.length; i++) {
     resultItem = [];
-    resultItem.push(data[i]["uid"]);
     resultItem.push(data[i]["id"]);
 
     for (var _j2 = 0; _j2 < data[i]["readyTime"]; _j2++) {
@@ -9719,7 +9851,7 @@ var processArray = function processArray(data) {
     if (lastWorkTime > data[i]["readyTime"]) {
       var diff = lastWorkTime - data[i].readyTime;
 
-      for (var _j3 = 0; _j3 < diff - 2; _j3++) {
+      for (var _j3 = 0; _j3 < diff - 1; _j3++) {
         pushData(resultItem, 1);
       }
     }
@@ -9732,6 +9864,29 @@ var processArray = function processArray(data) {
     resultArr.push(resultItem);
   }
 
+  var maxLength = resultArr.length - 1;
+
+  for (var _i = 0; _i < resultArr.length; _i++) {
+    for (var _j5 = resultArr[_i].length; _j5 < resultArr[maxLength].length; _j5++) {
+      pushData(resultArr[_i], 0);
+    }
+  }
+
+  resultArr.sort(function (a, b) {
+    return a[0] - b[0];
+  });
+
+  for (var _i2 = 0; _i2 < resultArr.length - 1; _i2++) {
+    if (resultArr[_i2][0] == resultArr[_i2 + 1][0]) {
+      for (var _j6 = 1; _j6 < resultArr[_i2].length; _j6++) {
+        if (resultArr[_i2][_j6] > resultArr[_i2 + 1][_j6]) resultArr[_i2 + 1][_j6] = resultArr[_i2][_j6];
+      }
+
+      resultArr.splice(_i2, 1);
+      _i2 -= 1;
+    }
+  }
+
   return resultArr;
 };
 var paintNums = function paintNums(data, attachToEl) {
@@ -9739,7 +9894,7 @@ var paintNums = function paintNums(data, attachToEl) {
     return a[p].length > c.length ? p : i;
   }, 0);
 
-  for (var i = 0; i < data[maxLengthIndex].length - 2; i++) {
+  for (var i = 0; i < data[maxLengthIndex].length - 1; i++) {
     var cell = document.createElement("div");
     cell.classList.add("item");
     cell.innerText = "".concat(i);
@@ -9747,19 +9902,15 @@ var paintNums = function paintNums(data, attachToEl) {
   }
 };
 var paintString = function paintString(data, attachToEl) {
-  data.sort(function (a, b) {
-    return a[0] - b[0];
-  });
-
   for (var i = 0; i < data.length; i++) {
     var string = document.createElement("div");
     string.classList.add("task-string");
     var idCell = document.createElement("div");
     idCell.classList.add("item", "task-id");
-    idCell.innerText = "P".concat(data[i][1]);
+    idCell.innerText = "P".concat(data[i][0]);
     string.appendChild(idCell);
 
-    for (var j = 2; j < data[i].length; j++) {
+    for (var j = 1; j < data[0].length; j++) {
       var _cell$classList;
 
       var cell = document.createElement("div");
@@ -9783,6 +9934,10 @@ var paintString = function paintString(data, attachToEl) {
   }
 };
 var paintInputData = function paintInputData(inpData, attachToEl) {
+  inpData.sort(function (a, b) {
+    return a["id"] - b["id"];
+  });
+
   for (var i = 0; i < inpData.length; i++) {
     var dataString = document.createElement("div");
     dataString.classList.add("input-data-string");
@@ -10090,8 +10245,6 @@ var loadFileProcess = /*#__PURE__*/function () {
                   var t = boof[i].split(", "); // разбить строку на подстроки
 
                   t[3] = t[3].split(";")[0]; // удалить символ ;
-
-                  data.uid = i; // уникальное имя
 
                   data.id = Number(t[0]); // добавить в него id
 
