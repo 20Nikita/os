@@ -11,9 +11,69 @@ const pushData = (arr, state) => {
     arr.push(state)
 }
 
-export const generate = async (tasksNum) => {
-    return new Promise((resolve) => {
+function createMask(e){
+    let matrix ='+7 (___) ___ __ __',
+        i = 0,
+        def = matrix.replace(/\D/g, ''),
+        val = this.value.replace(/\D/g, '');
+
+    if(def.length >= val.length){
+        val = def;
+    }
+
+    this.value = matrix.replace(/./g, function (a) {
+        return /[_\d]/.test(a) && i < val.length ? val.charAt(i++) : i >= val.length ? '' : a;
+    });
+}
+
+export const validateInput = () => {
+
+}
+export const checkNums = (selector, isValidField) => {
+    let inputToValidate = document.querySelector(selector);
+    if (inputToValidate){
+        inputToValidate.addEventListener("input", function () {
+            let val = this.value.replace(/\D/g, '');
+            this.value = val;
+
+            if(this.value >= 1){
+                isValidField = true;
+                return isValidField;
+            }
+            else{
+                isValidField = false;
+                return isValidField;
+            }
+        })
+    }
+}
+// export const checkNums = (selector, isValidField) => {
+//     let inputToValidate = document.querySelector(selector);
+//     if (inputToValidate){
+//         inputToValidate.addEventListener("input", function () {
+//             let val = this.value.replace(/\D/g, '');
+//             this.value = val;
+//
+//             if(this.value >= 1){
+//                 isValidField = true;
+//                 return isValidField;
+//             }
+//             else{
+//                 isValidField = false;
+//                 return isValidField;
+//             }
+//         })
+//     }
+// }
+
+export const generate = async () => {
+    return new Promise((resolve, reject) => {
+        const tasksNum = document.querySelector(".generate-area").value;
         let mainArr = [];
+
+        if(!tasksNum){
+            reject("Поле должно быть заполнено")
+        }
 
         for (let i = 0; i < tasksNum; i++) {
             let data = [];
@@ -76,9 +136,11 @@ export const processArray = (data) => {
         for(let j = resultArr[i].length; j < resultArr[maxLength].length; j++)
             pushData(resultArr[i], 0);
     }
+
     resultArr.sort((a, b) => a[0] - b[0]);
+
     for(let i = 0; i < resultArr.length-1; i++){
-        if(resultArr[i][0] == resultArr[i+1][0]){
+        if(resultArr[i][0] === resultArr[i+1][0]){
             for(let j = 1; j < resultArr[i].length; j++){
                 if(resultArr[i][j] > resultArr[i+1][j])
                     resultArr[i+1][j] = resultArr[i][j]
@@ -87,6 +149,7 @@ export const processArray = (data) => {
             i-=1
         }
     }
+
     return resultArr;
 }
 
@@ -131,18 +194,27 @@ export const paintString = (data, attachToEl) => {
 }
 
 export const paintInputData = (inpData, attachToEl) => {
+    const tableHeader = document.querySelector(".input-table-header");
+    const clearTable = (firstEl) => {                              //очистка таблиц
+        if(firstEl) {
+            while (firstEl.nextElementSibling) {
+                firstEl.nextElementSibling.remove();
+            }
+        }
+    }
+
+    clearTable(tableHeader);
+
     inpData.sort((a, b) => a["id"] - b["id"]);
 
     for (let i = 0; i < inpData.length; i++) {
         let dataString = document.createElement("div");
         dataString.classList.add("input-data-string");
         for(let data in inpData[i]){
-            if(data !== "uid") {
-                let dataBlock = document.createElement("div");
-                dataBlock.classList.add("input-data-block");
-                dataBlock.innerText = `${inpData[i][data]}`;
-                dataString.appendChild(dataBlock);
-            }
+            let dataBlock = document.createElement("div");
+            dataBlock.classList.add("input-data-block");
+            dataBlock.innerText = `${inpData[i][data]}`;
+            dataString.appendChild(dataBlock);
         }
 
         attachToEl.appendChild(dataString);

@@ -12,7 +12,7 @@ export const calcStats = (processedData, appendToEl) => {
             }
         }
     }
-    let result = "Среднее время ожидания: " + t_o/processedData.length + " Среднее время исполнения: " + t_i/processedData.length;
+    let result = "Среднее время ожидания: " + (t_o/processedData.length).toFixed(3) + " Среднее время исполнения: " + (t_i/processedData.length).toFixed(3);
 
     appendToEl.innerHTML = result;
 }
